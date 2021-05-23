@@ -1,4 +1,5 @@
-<div class="sidebar" data-color="orange">
+<!-- data-color = "#005A3B" -->
+<div class="sidebar" data-color="green">
     <!--
       Tip 1: You can change the color of the sidebar using: data-color="blue | green | orange | red | yellow"
   -->
@@ -18,6 +19,7 @@
       <ul class="nav">
       {% if current_user.is_authenticated %}
         <li class="{% if 'index' in segment %} active {% endif %}">
+          <!-- / means: index.html -->
           <a href="/">
             <i class="now-ui-icons design_app"></i>
             <p>Dashboard</p>
@@ -77,13 +79,6 @@
                 <p>Logout</p>
             </a>
         </li>        
-        <li class="active-pro active">
-          <a target="_blank"
-             href="https://appseed.us/admin-dashboards/flask-dashboard-now-ui-pro">
-            <i class="now-ui-icons objects_spaceship"></i>
-            <p>PRO Version</p>
-          </a>
-        </li>
         {% else %}
         <li class="active">
           <a target="_blank"
