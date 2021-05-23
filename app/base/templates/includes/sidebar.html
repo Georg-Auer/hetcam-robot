@@ -21,6 +21,12 @@
         <li class="{% if 'index' in segment %} active {% endif %}">
           <!-- / means: index.html -->
           <a href="/">
+            <i class="now-ui-icons media-1_camera-compact"></i>
+            <p>HET CAM²</p>
+          </a>
+        </li>
+        <li class="{% if 'index copy' in segment %} active {% endif %}">
+          <a href="/index_copy.html">
             <i class="now-ui-icons design_app"></i>
             <p>Dashboard</p>
           </a>
@@ -40,6 +46,7 @@
         <li class="{% if 'notifications' in segment %} active {% endif %}">
           <a href="/notifications.html">
             <i class="now-ui-icons ui-1_bell-53"></i>
+            <i class="now-ui-icons loader_gear"></i>
             <p>Notifications</p>
           </a>
         </li>
@@ -61,7 +68,8 @@
             <p>Typography</p>
           </a>
         </li>
-        <li class="{% if 'page-blank' in segment %} active {% endif %}">
+
+        <!-- <li class="{% if 'page-blank' in segment %} active {% endif %}">
             <a href="/page-blank.html">
                 <i class="now-ui-icons text_caps-small"></i>
                 <p>Blank Page</p>
@@ -72,19 +80,26 @@
                 <i class="now-ui-icons loader_gear"></i>
                 <p>Error 404</p>
             </a>
-        </li>
+        </li>         -->
         <li class="">
             <a href="{{ url_for('base_blueprint.logout') }}">
                 <i class="now-ui-icons media-1_button-power"></i>
                 <p>Logout</p>
             </a>
-        </li>        
+        </li>         
+        <li class="active">
+          <a target="_blank"
+             href="https://www.plus.ac.at/biowissenschaften/der-fachbereich/arbeitsgruppen/lepperdinger/spoc-labs/">
+            <i class="now-ui-icons objects_spaceship"></i>
+            <p>SPOC lab PLUS</p>
+          </a>
+        </li>
         {% else %}
         <li class="active">
           <a target="_blank"
-             href="https://appseed.us/admin-dashboards/flask-dashboard-now-ui-pro">
+             href="https://www.plus.ac.at/biowissenschaften/der-fachbereich/arbeitsgruppen/lepperdinger/spoc-labs/">
             <i class="now-ui-icons objects_spaceship"></i>
-            <p>PRO Version</p>
+            <p>SPOC lab PLUS</p>
           </a>
         </li>
         {% endif %}
