@@ -101,8 +101,8 @@ class BaseCamera(object):
         """Camera background thread."""
         print(f'Starting camera thread with resolution {resolution}.')
         print(f'Starting camera thread with resolution {BaseCamera.resolution}.')
-        frames_iterator = cls.frames(BaseCamera.resolution)
-        # frames_iterator = cls.frames()
+        # frames_iterator = cls.frames(BaseCamera.resolution) takes no arguments???
+        frames_iterator = cls.frames()
 
         for frame in frames_iterator:
             BaseCamera.frame = frame
