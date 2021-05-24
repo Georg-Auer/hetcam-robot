@@ -101,8 +101,12 @@ class BaseCamera(object):
         """Camera background thread."""
         print(f'Starting camera thread with resolution {resolution}.')
         print(f'Starting camera thread with resolution {BaseCamera.resolution}.')
-        # frames_iterator = cls.frames(BaseCamera.resolution) takes no arguments???
-        frames_iterator = cls.frames()
+        try:
+            frames_iterator = cls.frames(BaseCamera.resolution)
+            # this should work on "sudo CAMERA=opencv python3 run.py"
+        except:
+            frames_iterator = cls.frames()
+            # this is only needed for the 1,2,3 image demo camera
 
         for frame in frames_iterator:
             BaseCamera.frame = frame
