@@ -1,19 +1,4 @@
-# -*- encoding: utf-8 -*-
-"""
-Copyright (c) 2019 - present AppSeed.us
-"""
-
-from flask_migrate import Migrate
-from os import environ
-from sys import exit
-from decouple import config
-import logging
-
-from config import config_dict
-from app import create_app, db
-
-#from old camera app-----------------------------------------------------------------
-
+#!/usr/bin/env python
 from importlib import import_module
 import os
 from flask import Flask, render_template, Response
@@ -48,30 +33,8 @@ import cv2
 from datetime import datetime, timedelta
 # import old end
 # https://stackoverflow.com/questions/6871016/adding-days-to-a-date-in-python
-#-----------------------------------------------------------------------------------
 
-# WARNING: Don't run with debug turned on in production!
-DEBUG = config('DEBUG', default=True, cast=bool)
-
-# The configuration
-get_config_mode = 'Debug' if DEBUG else 'Production'
-
-try:
-    
-    # Load the configuration using the default values 
-    app_config = config_dict[get_config_mode.capitalize()]
-
-except KeyError:
-    exit('Error: Invalid <config_mode>. Expected values [Debug, Production] ')
-
-app = create_app( app_config ) 
-Migrate(app, db)
-
-if DEBUG:
-    app.logger.info('DEBUG       = ' + str(DEBUG)      )
-    app.logger.info('Environment = ' + get_config_mode )
-    app.logger.info('DBMS        = ' + app_config.SQLALCHEMY_DATABASE_URI )
-
+app = Flask(__name__)
 
 # scheduler set up:
 class Config(object):
@@ -315,5 +278,71 @@ def automatic():
 
 
 
-if __name__ == "__main__":
-    app.run()
+#code gallery
+
+APP_ROOT = os.path.dirname(os.path.abspath(__file__))
+
+ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
+
+@app.route("/gallery")
+def gallery():
+    images = os.listdir('./images')
+    print(images)
+    return render_template("gallery-index.html", images=images)
+
+def allowed_file(filename):
+    return '.' in filename and \
+            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+@app.route("/upload", methods=["GET","POST"])
+def upload_file():
+    if request.method=="GET":
+        return render_template('upload.html')
+    target = os.path.join(APP_ROOT, 'images/')
+    print(target)
+    if not os.path.isdir(target):
+        os.mkdir(target)
+    for file in request.files.getlist("file"):
+        print(file)
+        filename = file.filename
+        destination = "/".join([target, filename])
+        print(destination)
+        file.save(destination)
+    return render_template("uploaded.html")
+
+@app.route('/upload/<filename>')
+def send_image(filename):
+    return send_from_directory("images", filename)
+
+def send_image_for_filter(image):
+    return render_template('filter.html', image=image)
+
+@app.route("/filters")
+def filter():
+    return render_template('filters.html')
+
+@app.url_defaults
+def hashed_url_for_static_file(endpoint, values):
+    if 'static' == endpoint or endpoint.endswith('.static'):
+        filename = values.get('filename')
+        if filename:
+            if '.' in endpoint:  # has higher priority
+                blueprint = endpoint.rsplit('.', 1)[0]
+            else:
+                blueprint = request.blueprint  # can be None too
+            if blueprint:
+                static_folder = app.blueprints[blueprint].static_folder
+            else:
+                static_folder = app.static_folder
+            param_name = 'h'
+            while param_name in values:
+                param_name = '_' + param_name
+            values[param_name] = static_file_hash(os.path.join(static_folder, filename))
+
+def static_file_hash(filename):
+    return int(os.stat(filename).st_mtime)
+
+#gallery code end
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=80, threaded=True)
