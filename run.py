@@ -333,7 +333,11 @@ def show_index():
     print(images)
     images = os.listdir(images)
     print(images)
-    images = images.replace(os.sep, '/')
+    try:
+        images = images.replace(os.sep, '/')
+    except:
+        print("seperator not found")
+    print(images)
 
     # images = os.listdir('./images')
     print("list of found images")
