@@ -336,6 +336,7 @@ def show_index():
     try:
         images = images.replace(os.sep, '/')
         print("seperator changed")
+        print(images)
         images = images.replace('\\', '/')
         print("seperator changed again")
     except:
@@ -360,6 +361,18 @@ def show_skeleton():
     images = os.path.join(IMAGEPATH, "het-cam-raw")
     images = os.listdir(images)
     skeleton_path = os.path.join(IMAGEPATH, "het-cam-skeleton")
+
+    try:
+        images = skeleton_path.replace(os.sep, '/')
+        print("seperator changed")
+        print(images)
+        images = images.replace('\\', '/')
+        print("seperator changed again")
+    except:
+        print("seperator not found")
+    print(images)
+
+
     from bifurcation_detection import prepare_and_analyze
     for image in images:
         prepare_and_analyze(image, skeleton_path)
