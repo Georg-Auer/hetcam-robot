@@ -1,0 +1,61 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Gallery {% endblock %} 
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+    <div class="panel-header panel-header-sm">
+    </div>
+    <div class="content">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="card">
+            <div class="card-header">
+              <h5 class="title">
+                Captured Images
+              </h5>
+              <p class="category">
+                  Captured Images
+              </p>
+            </div>
+            <div class="card-body">
+              <div class="row">
+
+                <!-- <div class="image-container img-responsive">
+                    <img class="main-img" src="{{ url_for('send_image', filename=images[0]) }}" id="current" alt="Upload some images in the gallery">
+                </div>
+                <div class="imgs">
+                    {% for image in images %}
+                        <img class="imgs" src="{{ url_for('send_image', filename=image) }}" />
+                    {% endfor %}
+                </div> -->
+
+                <div class="row">
+                  <table class="gallery">
+                    {% for file_row in images |  batch(5)  %}
+                      <tr>
+                        {% for file in file_row %}
+                          {% if file %}
+                          <!-- <img src="{{ url_for('index', filename=file) }}" > -->
+                          <img src="{{ url_for('index', filename='./images' + file) }}" >
+                          {% endif %}
+                        {% endfor %}
+                      </tr>
+                    {% endfor %}
+                  </table>
+                </div>
+                
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}{% endblock javascripts %}
