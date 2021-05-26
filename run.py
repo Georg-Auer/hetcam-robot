@@ -318,17 +318,27 @@ def automatic():
 
 #code gallery
 
-APP_ROOT = os.path.dirname(os.path.abspath(__file__))
+PEOPLE_FOLDER = os.path.join('upload', 'het-cam-raw')
 
-# ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
+app.config['UPLOAD_FOLDER'] = PEOPLE_FOLDER
 
+# @app.route('/')
+# @app.route('/index')
 @app.route("/gallery")
-def gallery():
+def show_index():
     images = os.listdir('./images')
-    # images = os.listdir('./images')
     print(images)
-    # return render_template("gallery-index.html", images=images)
-    return render_template("index.html", images=images)
+    full_filename = os.path.join(app.config['UPLOAD_FOLDER'], '1.jpg')
+    print(full_filename)
+    return render_template("gallery.html", images = images)
+
+# @app.route("/gallery")
+# def gallery():
+#     images = os.listdir('./images')
+#     # images = os.listdir('./images')
+#     print(images)
+#     # return render_template("gallery-index.html", images=images)
+#     return render_template("index.html", images=images)
 
 # def allowed_file(filename):
 #     return '.' in filename and \
