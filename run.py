@@ -336,6 +336,8 @@ def show_index():
     try:
         images = images.replace(os.sep, '/')
         print("seperator changed")
+        images = images.replace('\\', '/')
+        print("seperator changed again")
     except:
         print("seperator not found")
     print(images)
