@@ -358,9 +358,11 @@ def show_index():
 
 @app.route("/gallery-skeleton")
 def show_skeleton():
-    images = os.path.join(IMAGEPATH, "het-cam-raw")
-    images = os.listdir(images)
-    skeleton_path = os.path.join(IMAGEPATH, "het-cam-skeleton")
+
+    images = os.path.join(IMAGEPATH, "het-cam-skeleton")
+    print(images)
+    images = os.path.normpath(images)
+    print(images)
 
     try:
         images = skeleton_path.replace(os.sep, '/')
