@@ -66,9 +66,9 @@ interval_minutes = 60
 
 @app.route('/')
 def index():
-    images = os.listdir('./images')
+    # images = os.listdir('./images')
     """Video streaming home page."""
-    return render_template('index.html', images=images)
+    return render_template('index')
 
 def gen(camera):
     """Video streaming generator function."""
