@@ -57,7 +57,6 @@ DEBUG = config('DEBUG', default=True, cast=bool)
 get_config_mode = 'Debug' if DEBUG else 'Production'
 
 try:
-    
     # Load the configuration using the default values 
     app_config = config_dict[get_config_mode.capitalize()]
 
@@ -72,6 +71,8 @@ if DEBUG:
     app.logger.info('Environment = ' + get_config_mode )
     app.logger.info('DBMS        = ' + app_config.SQLALCHEMY_DATABASE_URI )
 
+# constant for saving images, used by camera and gallery
+IMAGEPATH = "app\\base\\static\\upload\\het-cam-raw"
 
 # scheduler set up:
 class Config(object):
@@ -203,8 +204,8 @@ def picture_task(task_position):
         return
 
     print(f"task: start to take picture {task_position}")
-    filename = f'images/position{task_position}_{datetime.now().strftime("%Y%m%d-%H%M%S")}.jpg'
-
+    filename = f'{IMAGEPATH}/position{task_position}_{datetime.now().strftime("%Y%m%d-%H%M%S")}.jpg'
+    # is this defined twice?????????????????????????
     try:
         object_methods = [method_name for method_name in dir(Camera)
             if callable(getattr(Camera, method_name))]
@@ -219,7 +220,7 @@ def picture_task(task_position):
     # Camera().set_resolution(resolution)
 
     video_frame_timepoint = (datetime.now().strftime("%Y%m%d-%H%M%S"))
-    filename = f'images/position{task_position}_{video_frame_timepoint}.jpg'
+    filename = f'{IMAGEPATH}/position{task_position}_{video_frame_timepoint}.jpg'
     # # foldername = 'images\'
     # # filename = foldername+filename
     # print(filename)
@@ -322,10 +323,11 @@ def automatic():
 # app.config['UPLOAD_FOLDER'] = PEOPLE_FOLDER
 # @app.route('/')
 # @app.route('/index')
+
 @app.route("/gallery")
 def show_index():
-    imagepath = "app\\base\\static\\upload\\het-cam-raw"
-    images = os.listdir(imagepath)
+    # imagepath = "app\\base\\static\\upload\\het-cam-raw"
+    images = os.listdir(IMAGEPATH)
     # images = os.listdir('./images')
     print("list of found images")
     # print(PEOPLE_FOLDER)
