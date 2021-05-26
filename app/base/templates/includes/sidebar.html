@@ -25,22 +25,34 @@
             <p>HET CAM²</p>
           </a>
         </li>
-        <li class="{% if 'dashboard' in segment %} active {% endif %}">
+        <li class="{% if 'map' in segment %} active {% endif %}">
+          <a href="/gallery">
+            <i class="now-ui-icons design_image"></i>
+            <p>Recorded Images</p>
+          </a>
+        </li>
+        <li class="{% if 'map' in segment %} active {% endif %}">
+          <a href="/gallery-skeleton">
+            <i class="now-ui-icons design_image"></i>
+            <p>Skeletonized Images</p>
+          </a>
+        </li>
+        <!-- <li class="{% if 'dashboard' in segment %} active {% endif %}">
           <a href="/dashboard.html">
-            <i class="now-ui-icons design_app"></i>
+            <i class="now-ui-icons education_atom"></i>
             <p>Dashboard</p>
+          </a>
+        </li> -->
+        <!-- <li class="{% if 'user' in segment %} active {% endif %}">
+          <a href="/user.html">
+            <i class="now-ui-icons users_single-02"></i>
+            <p>User Profile</p>
           </a>
         </li>
         <li class="{% if 'icons' in segment %} active {% endif %}">
           <a href="/icons.html">
-            <i class="now-ui-icons education_atom"></i>
+            <i class="now-ui-icons design_app location_map-big"></i>
             <p>Icons</p>
-          </a>
-        </li>
-        <li class="{% if 'map' in segment %} active {% endif %}">
-          <a href="/gallery">
-            <i class="now-ui-icons location_map-big"></i>
-            <p>Recorded Images</p>
           </a>
         </li>
         <li class="{% if 'notifications' in segment %} active {% endif %}">
@@ -48,12 +60,6 @@
             <i class="now-ui-icons ui-1_bell-53"></i>
             <i class="now-ui-icons loader_gear"></i>
             <p>Notifications</p>
-          </a>
-        </li>
-        <li class="{% if 'user' in segment %} active {% endif %}">
-          <a href="/user.html">
-            <i class="now-ui-icons users_single-02"></i>
-            <p>User Profile</p>
           </a>
         </li>
         <li class="{% if 'tables' in segment %} active {% endif %}">
@@ -67,8 +73,7 @@
             <i class="now-ui-icons text_caps-small"></i>
             <p>Typography</p>
           </a>
-        </li>
-
+        </li> -->
         <!-- <li class="{% if 'page-blank' in segment %} active {% endif %}">
             <a href="/page-blank.html">
                 <i class="now-ui-icons text_caps-small"></i>
@@ -95,6 +100,12 @@
           </a>
         </li>
         {% else %}
+        <li class="{% if 'map' in segment %} active {% endif %}">
+          <a href="/gallery">
+            <i class="now-ui-icons design_image"></i>
+            <p>Recorded Images</p>
+          </a>
+        </li>
         <li class="active">
           <a target="_blank"
              href="https://www.plus.ac.at/biowissenschaften/der-fachbereich/arbeitsgruppen/lepperdinger/spoc-labs/">

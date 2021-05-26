@@ -72,7 +72,7 @@ if DEBUG:
     app.logger.info('DBMS        = ' + app_config.SQLALCHEMY_DATABASE_URI )
 
 # constant for saving images, used by camera and gallery
-IMAGEPATH = "app\\base\\static\\upload\\het-cam-raw"
+IMAGEPATH = "app\\base\\static\\upload"
 
 # scheduler set up:
 class Config(object):
@@ -204,7 +204,7 @@ def picture_task(task_position):
         return
 
     print(f"task: start to take picture {task_position}")
-    filename = f'{IMAGEPATH}/position{task_position}_{datetime.now().strftime("%Y%m%d-%H%M%S")}.jpg'
+    # filename = f'{IMAGEPATH}/position{task_position}_{datetime.now().strftime("%Y%m%d-%H%M%S")}.jpg'
     # is this defined twice?????????????????????????
     try:
         object_methods = [method_name for method_name in dir(Camera)
@@ -327,7 +327,8 @@ def automatic():
 @app.route("/gallery")
 def show_index():
     # imagepath = "app\\base\\static\\upload\\het-cam-raw"
-    images = os.listdir(IMAGEPATH)
+    images = os.path.join(IMAGEPATH, "het-cam-raw")
+    images = os.listdir(images)
     # images = os.listdir('./images')
     print("list of found images")
     # print(PEOPLE_FOLDER)
@@ -339,7 +340,19 @@ def show_index():
     # print(os.listdir(PEOPLE_FOLDER))
     # full_filename = os.path.join(app.config['UPLOAD_FOLDER'], '1.jpg')
     # print(full_filename)
-    return render_template("gallery.html", images = images, images2 = images)
+    return render_template("gallery.html", images = images, images_skeletonized = images)
+
+@app.route("/gallery-skeleton")
+def show_skeleton():
+    images = os.path.join(IMAGEPATH, "het-cam-raw")
+    images = os.listdir(images)
+    skeleton_path = os.path.join(IMAGEPATH, "het-cam-skeleton")
+    from bifurcation_detection import prepare_and_analyze
+    for image in images:
+        prepare_and_analyze(image, skeleton_path)
+    
+    skeleton_path = os.listdir(skeleton_path)
+    return render_template("gallery-skeleton.html", images = images, images_skeletonized = skeleton_path)
 
 #gallery code end
 
