@@ -18,14 +18,17 @@
                 Captured Images
               </h5>
               <p class="category">
-                  Captured Images
+                  Recently captured Images
               </p>
             </div>
-            <div class="card-body">
-              {% for name in images %}
-                <img src="{{ url_for('static', filename='upload/het-cam-raw/' + name) }}" >
-              {% endfor %}
-            </div>
+              <div class="card-body">
+                {% for name in images %}
+                  <img src="{{ url_for('static', filename='upload/het-cam-raw/' + name) }}" >
+                {% endfor %}
+                {% for name in images2 %}
+                  <img src="{{ url_for('static', filename='upload/het-cam-raw/' + name) }}" >
+                {% endfor %}
+              </div>
           </div>
         </div>
       </div>
