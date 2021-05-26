@@ -2,6 +2,10 @@ hetcam-video-streaming
 
 # SPOC lab CAM²: hetcam-webcam
 
+
+How to make the script run on startup:
+sudo nano /etc/rc.local
+
 start cam with 
 sudo CAMERA=opencv python3 app.py
 to open on restricted port 80
