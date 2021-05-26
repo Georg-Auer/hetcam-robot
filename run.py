@@ -365,7 +365,7 @@ def show_skeleton():
     print(images)
 
     try:
-        images = skeleton_path.replace(os.sep, '/')
+        images = images.replace(os.sep, '/')
         print("seperator changed")
         print(images)
         images = images.replace('\\', '/')
