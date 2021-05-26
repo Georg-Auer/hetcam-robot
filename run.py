@@ -368,11 +368,11 @@ def show_skeleton():
         images = images.replace(os.sep, '/')
         print("seperator changed")
         print(images)
-        images = images.replace('\\', '/')
+        skeleton_path = images.replace('\\', '/')
         print("seperator changed again")
     except:
         print("seperator not found")
-    print(images)
+    print(skeleton_path)
 
 
     from bifurcation_detection import prepare_and_analyze
