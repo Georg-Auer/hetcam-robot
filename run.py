@@ -328,8 +328,12 @@ def automatic():
 def show_index():
     # imagepath = "app\\base\\static\\upload\\het-cam-raw"
     images = os.path.join(IMAGEPATH, "het-cam-raw")
+    print(images)
     images = os.path.normpath(images)
+    print(images)
     images = os.listdir(images)
+    print(images)
+
     # images = os.listdir('./images')
     print("list of found images")
     # print(PEOPLE_FOLDER)
