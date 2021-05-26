@@ -331,7 +331,7 @@ def show_index():
     print(images)
     images = os.path.normpath(images)
     print(images)
-    images = os.listdir(images)
+
     print(images)
     try:
         images = images.replace(os.sep, '\\')
@@ -339,7 +339,7 @@ def show_index():
     except:
         print("seperator not found")
     print(images)
-
+    images = os.listdir(images)
     # images = os.listdir('./images')
     print("list of found images")
     # print(PEOPLE_FOLDER)
