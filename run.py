@@ -101,7 +101,7 @@ motor3_enable = 0
 motor3_direction = 0
 motor3_position = 0
 
-interval_minutes = 60
+interval_minutes = 30 # experiment time in minutes
 
 @app.route('/')
 def index():
@@ -269,13 +269,13 @@ def toggled_status():
         print("Switching On")
         schedule_start = datetime.today()
         print(f"starting scheduling {schedule_start}")
-        moving_time = 10
+        moving_time = 10 # in seconds
         print(f"moving time is assumed {moving_time} seconds") 
         task_seperation_increase = moving_time*2
         task_seperation = 1
         # instead, create a list - in this list the degrees where pics should be taken are stored
         # all positions: for degree in range(0, 360, 90)
-        for degree in range(0, 90, 90): # starting angle, stop angle and step angle in degrees (180 = picture at 0 & 90, 270 = pic at 0,90,180)
+        for degree in range(90, 360, 90): # starting angle, stop angle and step angle in degrees (180 = picture at 0 & 90, 270 = pic at 0,90,180)
             print(degree)
             schedule_time_movement = schedule_start + timedelta(seconds=task_seperation)
             schedule_time_picture = schedule_start + timedelta(seconds=moving_time+task_seperation)
