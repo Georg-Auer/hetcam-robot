@@ -4,7 +4,8 @@ import imutils
 import fingerprint_feature_extractor
 
 def prepare_and_analyze(img_name, path, scale_percent = 10):
-    img = cv2.imread(img_name,1)
+    raw_image_name = f'{path}/{img_name}'
+    img = cv2.imread(raw_image_name,1)
     # # only use the red component, because structure is red
     # # https://stackoverflow.com/questions/39903809/wrong-color-reading-an-image-with-opencv-python
     # blue,green,red = cv2.split(img)

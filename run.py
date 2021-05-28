@@ -332,13 +332,12 @@ def show_index():
 def show_skeleton():
 
     raw_image_foldername = f'{IMAGEPATH}/het-cam-raw'
-
-    from bifurcation_detection import prepare_and_analyze
-    for image in raw_image_foldername:
-        prepare_and_analyze(image, raw_image_foldername)
-    
     raw_image_list = os.listdir(raw_image_foldername)
     print(raw_image_list)
+
+    from bifurcation_detection import prepare_and_analyze
+    for image in raw_image_list:
+        prepare_and_analyze(image, raw_image_foldername)
     
     skeleton_image_foldername = f'{IMAGEPATH}/skeleton-cam-raw'
     skeleton_images = os.listdir(skeleton_image_foldername)
