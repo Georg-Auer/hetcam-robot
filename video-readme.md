@@ -26,7 +26,7 @@ https://blog.miguelgrinberg.com/post/flask-video-streaming-revisited
 
 to start an OpenCV session from bash, you can do this:
 
-$ CAMERA=opencv python app.py
+$ CAMERA=opencv python3 run.py
 
 From a Windows command prompt you can do the same as follows:
 

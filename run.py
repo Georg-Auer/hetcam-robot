@@ -221,7 +221,7 @@ def picture_task(task_position):
     # Camera().set_resolution(resolution)
 
     video_frame_timepoint = (datetime.now().strftime("%Y%m%d-%H%M%S"))
-    filename = f'{IMAGEPATH}/position{task_position}_{video_frame_timepoint}.jpg'
+    filename = f'{IMAGEPATH}/het-cam-raw/position{task_position}_{video_frame_timepoint}.jpg'
     # filename = f'images/position{task_position}_{video_frame_timepoint}.jpg'
     # # foldername = 'images\'
     # # filename = foldername+filename
