@@ -321,65 +321,29 @@ def automatic():
 
 #code gallery
 
-# PEOPLE_FOLDER = os.path.join('upload', 'het-cam-raw')
-# app.config['UPLOAD_FOLDER'] = PEOPLE_FOLDER
-# @app.route('/')
-# @app.route('/index')
-
 @app.route("/gallery")
 def show_index():
-    # imagepath = "app\\base\\static\\upload\\het-cam-raw"
-    # images = os.path.join(IMAGEPATH, "het-cam-raw")
-    # print(images)
-    # images = os.path.normpath(images)
-    # print(images)
-
-    # print(images)
-    # try:
-    #     images = images.replace(os.sep, '/')
-    #     print("seperator changed")
-    #     print(images)
-    #     images = images.replace('\\', '/')
-    #     print("seperator changed again")
-    # except:
-    #     print("seperator not found")
-    # print(images)
-    # images = os.listdir(images)
-    # print("list of found images")
-    # print(images)
-    # return render_template("gallery.html", images = images, images_skeletonized = images)
-
-    # this should work to and is way easier:
-    image_foldername = f'{IMAGEPATH}/het-cam-raw'
-    image_list = os.listdir(image_foldername)
-    print(image_list)
-    return render_template("gallery.html", images = image_list, images_skeletonized = image_list)
+    raw_image_foldername = f'{IMAGEPATH}/het-cam-raw'
+    raw_image_list = os.listdir(raw_image_foldername)
+    print(raw_image_list)
+    return render_template("gallery.html", images = raw_image_list, images_skeletonized = raw_image_list)
 
 @app.route("/gallery-skeleton")
 def show_skeleton():
 
-    images = os.path.join(IMAGEPATH, "het-cam-skeleton")
-    print(images)
-    images = os.path.normpath(images)
-    print(images)
-
-    try:
-        images = images.replace(os.sep, '/')
-        print("seperator changed")
-        print(images)
-        skeleton_path = images.replace('\\', '/')
-        print("seperator changed again")
-    except:
-        print("seperator not found")
-    print(skeleton_path)
-
+    raw_image_foldername = f'{IMAGEPATH}/het-cam-raw'
 
     from bifurcation_detection import prepare_and_analyze
-    for image in images:
-        prepare_and_analyze(image, skeleton_path)
+    for image in raw_image_foldername:
+        prepare_and_analyze(image, raw_image_foldername)
     
-    skeleton_path = os.listdir(skeleton_path)
-    return render_template("gallery-skeleton.html", images = images, images_skeletonized = skeleton_path)
+    raw_image_list = os.listdir(raw_image_foldername)
+    print(raw_image_list)
+    
+    skeleton_image_foldername = f'{IMAGEPATH}/skeleton-cam-raw'
+    skeleton_images = os.listdir(skeleton_image_foldername)
+    print(skeleton_images)
+    return render_template("gallery-skeleton.html", images = raw_image_list, images_skeletonized = skeleton_images)
 
 #gallery code end
 
