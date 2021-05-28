@@ -3,7 +3,7 @@ import numpy as np
 import imutils
 import fingerprint_feature_extractor
 
-def prepare_and_analyze(img_name, path, scale_percent = 10):
+def prepare_and_analyze(img_name, path, skeleton_image_foldername, scale_percent = 10):
     raw_image_name = f'{path}/{img_name}'
     img = cv2.imread(raw_image_name,1)
     # # only use the red component, because structure is red
@@ -80,7 +80,7 @@ def prepare_and_analyze(img_name, path, scale_percent = 10):
     import os
     print(path)
     print(img)
-    skeleton_path = os.path.join(path, img_name)
+    skeleton_path = f"{skeleton_image_foldername}/{img_name}"
     # cv2.imshow("skeleton",skeleton)
     # https://stackoverflow.com/questions/44587613/how-to-save-a-binary-imagewith-dtype-bool-using-cv2
 
