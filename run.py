@@ -72,7 +72,8 @@ if DEBUG:
     app.logger.info('DBMS        = ' + app_config.SQLALCHEMY_DATABASE_URI )
 
 # constant for saving images, used by camera and gallery
-IMAGEPATH = "app\\base\\static\\upload"
+# IMAGEPATH = "app\\base\\static\\upload"
+IMAGEPATH = "app/base/static/upload"
 
 # scheduler set up:
 class Config(object):
@@ -221,6 +222,7 @@ def picture_task(task_position):
 
     video_frame_timepoint = (datetime.now().strftime("%Y%m%d-%H%M%S"))
     filename = f'{IMAGEPATH}/position{task_position}_{video_frame_timepoint}.jpg'
+    # filename = f'images/position{task_position}_{video_frame_timepoint}.jpg'
     # # foldername = 'images\'
     # # filename = foldername+filename
     # print(filename)

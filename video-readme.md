@@ -1,14 +1,17 @@
 hetcam-video-streaming
 
-# SPOC lab CAM²: hetcam-webcam
+# SPOC lab CAM²: het-cam-dashboard
 
 
 How to make the script run on startup:
 sudo nano /etc/rc.local
 
 start cam with 
-sudo CAMERA=opencv python3 app.py
+sudo CAMERA=opencv python3 run.py
 to open on restricted port 80
+
+
+
 
 How to make the script run on startup:
 sudo nano /etc/rc.local
@@ -27,5 +30,9 @@ $ CAMERA=opencv python app.py
 
 From a Windows command prompt you can do the same as follows:
 
+on windows run:
+$ python run.py CAMERA=opencv
+
+or:
 $ set CAMERA=opencv
-$ python app.py
+$ python run.py
