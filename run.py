@@ -329,34 +329,31 @@ def automatic():
 @app.route("/gallery")
 def show_index():
     # imagepath = "app\\base\\static\\upload\\het-cam-raw"
-    images = os.path.join(IMAGEPATH, "het-cam-raw")
-    print(images)
-    images = os.path.normpath(images)
-    print(images)
+    # images = os.path.join(IMAGEPATH, "het-cam-raw")
+    # print(images)
+    # images = os.path.normpath(images)
+    # print(images)
 
-    print(images)
-    try:
-        images = images.replace(os.sep, '/')
-        print("seperator changed")
-        print(images)
-        images = images.replace('\\', '/')
-        print("seperator changed again")
-    except:
-        print("seperator not found")
-    print(images)
-    images = os.listdir(images)
-    # images = os.listdir('./images')
-    print("list of found images")
-    # print(PEOPLE_FOLDER)
-    # images3 = os.listdir('./images2')
-    # print(images3)
+    # print(images)
+    # try:
+    #     images = images.replace(os.sep, '/')
+    #     print("seperator changed")
+    #     print(images)
+    #     images = images.replace('\\', '/')
+    #     print("seperator changed again")
+    # except:
+    #     print("seperator not found")
+    # print(images)
+    # images = os.listdir(images)
+    # print("list of found images")
+    # print(images)
+    # return render_template("gallery.html", images = images, images_skeletonized = images)
 
-    print(images)
-    # print(os.listdir('./static/assets/img'))
-    # print(os.listdir(PEOPLE_FOLDER))
-    # full_filename = os.path.join(app.config['UPLOAD_FOLDER'], '1.jpg')
-    # print(full_filename)
-    return render_template("gallery.html", images = images, images_skeletonized = images)
+    # this should work to and is way easier:
+    image_foldername = f'{IMAGEPATH}/het-cam-raw'
+    image_list = os.listdir(image_foldername)
+    print(image_list)
+    return render_template("gallery.html", images = image_list, images_skeletonized = image_list)
 
 @app.route("/gallery-skeleton")
 def show_skeleton():
