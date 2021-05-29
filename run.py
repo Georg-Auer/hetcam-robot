@@ -330,7 +330,6 @@ def show_index():
 
 @app.route("/gallery-skeleton")
 def show_skeleton():
-
     raw_image_foldername = f'{IMAGEPATH}/het-cam-raw'
     raw_image_list = os.listdir(raw_image_foldername)
     skeleton_image_foldername = f'{IMAGEPATH}/het-cam-skeleton'
@@ -342,8 +341,23 @@ def show_skeleton():
     print(skeleton_images)
     return render_template("gallery-skeleton.html", images = raw_image_list, images_skeletonized = skeleton_images)
 
-#gallery code end
+@app.route("/gallery-yolo")
+def show_skeleton():
+    raw_image_foldername = f'{IMAGEPATH}/het-cam-raw'
+    raw_image_list = os.listdir(raw_image_foldername)
+    yolo_image_foldername = f'{IMAGEPATH}/het-cam-yolo'
+    # create file object_detection from detect.py from yolov5 with function analyze
+    # files need to be saved in this function
+    from yolov5.detect import detect
+    detect()
+    # scale_percent = 40
+    # for image in raw_image_list:
+    #     analyze(image, raw_image_foldername, yolo_image_foldername, scale_percent)
+    yolo_images = os.listdir(yolo_image_foldername)
+    print(yolo_images)
+    return render_template("gallery-skeleton.html", images = raw_image_list, images_yolonized = yolo_images)
 
+#gallery code end
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=80, threaded=True)
