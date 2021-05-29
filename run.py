@@ -342,7 +342,7 @@ def show_skeleton():
     return render_template("gallery-skeleton.html", images = raw_image_list, images_skeletonized = skeleton_images)
 
 @app.route("/gallery-yolo")
-def show_skeleton():
+def show_yolo():
     raw_image_foldername = f'{IMAGEPATH}/het-cam-raw'
     raw_image_list = os.listdir(raw_image_foldername)
     yolo_image_foldername = f'{IMAGEPATH}/het-cam-yolo'
