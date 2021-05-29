@@ -155,7 +155,7 @@ def detect2(opt):
 
 def detect():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--weights', nargs='+', type=str, default='weights/best.pt', help='model.pt path(s)')
+    parser.add_argument('--weights', nargs='+', type=str, default='yolov5/weights/best.pt', help='model.pt path(s)')
     parser.add_argument('--source', type=str, default='app/base/static/upload/het-cam-raw', help='source')  # file/folder, 0 for webcam
     parser.add_argument('--img-size', type=int, default=416, help='inference size (pixels)') #default 640
     parser.add_argument('--conf-thres', type=float, default=0.3, help='object confidence threshold')
