@@ -1,0 +1,43 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Gallery {% endblock %} 
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+    <div class="panel-header panel-header-sm">
+    </div>
+    <div class="content">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="card">
+            <div class="card-header">
+              <h5 class="title">
+                Captured Images
+              </h5>
+              <p class="category">
+                  Recently captured Images & Skeletonized Image
+              </p>
+            </div>
+              <div class="card-body">
+                <!-- {% for name in images %}
+                  <img src="{{ url_for('static', filename='upload/het-cam-raw/' + name) }}" >
+                {% endfor %} -->
+                {% for name in images_yolonized %}
+                  <img src="{{ url_for('static', filename='upload/het-cam-yolo/' + name) }}" >
+                {% endfor %}
+              </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+{% endblock content %}
+
+
+
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}{% endblock javascripts %}
