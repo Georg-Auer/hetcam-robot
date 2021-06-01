@@ -275,7 +275,7 @@ def toggled_status():
         task_seperation = 1
         # instead, create a list - in this list the degrees where pics should be taken are stored
         # all positions: for degree in range(0, 360, 90)
-        for degree in range(90, 360, 90): # starting angle, stop angle and step angle in degrees (180 = picture at 0 & 90, 270 = pic at 0,90,180)
+        for degree in range(0, 360, 90): # starting angle, stop angle and step angle in degrees (180 = picture at 0 & 90, 270 = pic at 0,90,180)
             print(degree)
             schedule_time_movement = schedule_start + timedelta(seconds=task_seperation)
             schedule_time_picture = schedule_start + timedelta(seconds=moving_time+task_seperation)
