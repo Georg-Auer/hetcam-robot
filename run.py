@@ -333,10 +333,15 @@ def show_skeleton():
     raw_image_foldername = f'{IMAGEPATH}/het-cam-raw'
     raw_image_list = os.listdir(raw_image_foldername)
     skeleton_image_foldername = f'{IMAGEPATH}/het-cam-skeleton'
+    skeleton_images = os.listdir(skeleton_image_foldername)
+    # find skeleton only for images w/o skeleton
+    unskeletized_raw_images = list(set(raw_image_list) - set(skeleton_images))
+
     from bifurcation_detection import prepare_and_analyze
     scale_percent = 40
-    for image in raw_image_list:
+    for image in unskeletized_raw_images:
         prepare_and_analyze(image, raw_image_foldername, skeleton_image_foldername, scale_percent)
+    # include newly created images for gallery
     skeleton_images = os.listdir(skeleton_image_foldername)
     print(skeleton_images)
     return render_template("gallery-skeleton.html", images = raw_image_list, images_skeletonized = skeleton_images)
