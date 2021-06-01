@@ -13,10 +13,10 @@ import argparse
 import torch
 import torch.nn as nn
 
-import yolov5.models
-from yolov5.models.experimental import attempt_load
-from yolov5.utils.activations import Hardswish, SiLU
-from yolov5.utils.general import set_logging
+import models
+from models.experimental import attempt_load
+from utils.activations import Hardswish, SiLU
+from utils.general import set_logging
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
