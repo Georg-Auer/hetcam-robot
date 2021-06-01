@@ -348,14 +348,14 @@ def show_yolo():
     yolo_image_foldername = f'{IMAGEPATH}/het-cam-yolo'
     # create file object_detection from detect.py from yolov5 with function analyze
     # files need to be saved in this function
-    from yolov5.detect import detect
+    from detect import detect
     detect()
     # scale_percent = 40
     # for image in raw_image_list:
     #     analyze(image, raw_image_foldername, yolo_image_foldername, scale_percent)
     yolo_images = os.listdir(yolo_image_foldername)
     print(yolo_images)
-    return render_template("gallery-skeleton.html", images = raw_image_list, images_yolonized = yolo_images)
+    return render_template("gallery-yolo.html", images = raw_image_list, images_yolonized = yolo_images)
 
 #gallery code end
 
