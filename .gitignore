@@ -28,4 +28,4 @@ package-lock.json
 .vscode/symbols.json
 
 # images
-/app/base/static/upload/het-cam-raw
+# /app/base/static/upload/het-cam-raw
