@@ -153,10 +153,15 @@ def detect2(opt):
 
 # py -3.7 detect.py --weights weights/best.pt --img 416 --conf 0.4 --project app/base/static/upload --exist-ok --name het-cam-yolo --source app/base/static/upload/het-cam-raw
 
-def detect():
+def detect(img_to_analyze, raw_image_foldername, yolo_image_foldername):
+    # ignore parser for now and add_argument default value as workaround
+    # yolo_image_foldername unused!
+    raw_image_name = f'{raw_image_foldername}/{img_to_analyze}'
+
     parser = argparse.ArgumentParser()
     parser.add_argument('--weights', nargs='+', type=str, default='weights/best.pt', help='model.pt path(s)')
-    parser.add_argument('--source', type=str, default='app/base/static/upload/het-cam-raw', help='source')  # file/folder, 0 for webcam
+    # parser.add_argument('--source', type=str, default='app/base/static/upload/het-cam-raw', help='source')  # file/folder, 0 for webcam
+    parser.add_argument('--source', type=str, default=f'{raw_image_name}', help='source')  # file/folder, 0 for webcam
     parser.add_argument('--img-size', type=int, default=416, help='inference size (pixels)') #default 640
     parser.add_argument('--conf-thres', type=float, default=0.4, help='object confidence threshold')
     parser.add_argument('--iou-thres', type=float, default=0.45, help='IOU threshold for NMS')

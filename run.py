@@ -351,13 +351,15 @@ def show_yolo():
     raw_image_foldername = f'{IMAGEPATH}/het-cam-raw'
     raw_image_list = os.listdir(raw_image_foldername)
     yolo_image_foldername = f'{IMAGEPATH}/het-cam-yolo'
-    # create file object_detection from detect.py from yolov5 with function analyze
-    # files need to be saved in this function
+    yolo_images = os.listdir(yolo_image_foldername)
+    unyolonized_raw_images = list(set(raw_image_list) - set(yolo_images))
+
     from detect import detect
-    detect()
+    # detect()
     # scale_percent = 40
-    # for image in raw_image_list:
-    #     analyze(image, raw_image_foldername, yolo_image_foldername, scale_percent)
+    for image in unyolonized_raw_images:
+        detect(image, raw_image_foldername, yolo_image_foldername)
+
     yolo_images = os.listdir(yolo_image_foldername)
     print(yolo_images)
     return render_template("gallery-yolo.html", images = raw_image_list, images_yolonized = yolo_images)
