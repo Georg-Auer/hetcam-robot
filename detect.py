@@ -162,7 +162,7 @@ def detect():
     parser.add_argument('--iou-thres', type=float, default=0.45, help='IOU threshold for NMS')
     parser.add_argument('--device', default='cpu', help='cuda device, i.e. 0 or 0,1,2,3 or cpu')
     parser.add_argument('--view-img', action='store_false', help='display results', default=False)
-    parser.add_argument('--save-txt', action='store_true', help='save results to *.txt', default=True)
+    parser.add_argument('--save-txt', action='store_true', help='save results to *.txt', default=False)
     parser.add_argument('--save-conf', action='store_true', help='save confidences in --save-txt labels', default=True)
     parser.add_argument('--save-crop', action='store_false', help='save cropped prediction boxes', default=False)
     parser.add_argument('--nosave', action='store_false', help='do not save images/videos', default=False)
