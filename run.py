@@ -33,6 +33,9 @@ else:
 from PIL import Image
 from io import BytesIO
 
+# classes experiment & position
+from classes.experiments import Position, Experiment
+
 # gallery
 from flask import request, redirect, send_from_directory
 from werkzeug.utils import secure_filename
@@ -101,7 +104,10 @@ motor3_enable = 0
 motor3_direction = 0
 motor3_position = 0
 
-interval_minutes = 30 # experiment time in minutes
+INTERVAL = 1 # experiment time in minutes
+EXPERIMENT_NAME = "default_experiment"
+EXPERIMENT_POSITIONS = [0, 90, 180, 270]
+DATABASE = []
 
 @app.route('/')
 def index():
@@ -137,23 +143,7 @@ def video_feed():
     return Response(gen(Camera()),
                     mimetype='multipart/x-mixed-replace; boundary=frame')
 
-# buttons, scheduler
-
-
-def motor_position(position_in_degree):
-    print(f"motor_position {position_in_degree}")
-    # 4800 steps are 270°, 360 should never be possible since = 0°
-    # degrees are divided by 90 and multiplied by 1600
-    # only send int values to arduino!
-    step_position_arduino = int(position_in_degree/90*1600)
-    print(f"Sending: {step_position_arduino} steps")
-    try:
-        results = np.array(connect_to_arduino(comport,motor0_enable,motor0_direction,step_position_arduino,
-            motor1_enable,motor1_direction,motor1_position,motor2_enable,motor2_direction,motor2_position,motor3_enable,motor3_direction,motor3_position))
-        print(f"Received values: {results}")
-    except:
-        print("Microcontroller not found or not connected")
-        return
+# buttons
 
 @app.route('/move_deg')
 def move_deg():
@@ -164,89 +154,12 @@ def move_deg():
     if(degree <= -90):
         degree = -90
     print(f"Moving to {degree}°")
-    motor_position(degree)
+    recent_experiment = select_experiment()
+    print(recent_experiment.name)
+    recent_experiment.planned_position = degree
+    recent_experiment.motor_position
     return '''<h1>Moving to: {}</h1>'''.format(degree)
     # return ("nothing")
-
-def motor_task_creator(task_id):
-    print(f"start of motor task creator {task_id}")
-    # creating motor task that runs every minute
-    scheduler.add_job(func=motor_task, trigger='interval', minutes=interval_minutes, args=[task_id], id='move'+str(task_id))
-
-def picture_task_creator(task_id):
-    print(f"start of picture task creator {task_id}")
-    # creating picture task that runs every minute
-    scheduler.add_job(func=picture_task, trigger='interval', minutes=interval_minutes, args=[task_id], id='picture'+str(task_id))
-
-def motor_task(task_id):
-    # send to motor position
-    print(f"task: moving to position {task_id}")
-    motor_position(task_id)
-
-def picture_task(task_position):
-    # activate camera, this also generates a frame in gif_bytes_io
-    # camera goes back to sleep after 10 s
-
-    print("Setting higher resolution for automated pictures")
-    new_resolution = [1280, 720]
-
-    # this triggers the creation of a new thread, with old resolution setting
-    # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    Camera().set_resolution(new_resolution)
-    # Camera().resolution = new_resolution
-    try:
-        print(f"Resolution should be set to {Camera().resolution}")
-        gen(Camera())
-        # print("Camera generated")
-        print(f"Resolution was set to {Camera().resolution}")
-        # Camera get generated with high resolution?
-    except:
-        print("Could not generate camera")
-        return
-
-    print(f"task: start to take picture {task_position}")
-    # filename = f'{IMAGEPATH}/position{task_position}_{datetime.now().strftime("%Y%m%d-%H%M%S")}.jpg'
-    # is this defined twice?????????????????????????
-    try:
-        object_methods = [method_name for method_name in dir(Camera)
-            if callable(getattr(Camera, method_name))]
-        print(object_methods)
-    except:
-        print("could not find methods for object")
-
-    frame = Camera().get_frame()
-
-    # Camera().resolution = new_resolution
-    # resolution = [640, 480]
-    # Camera().set_resolution(resolution)
-
-    video_frame_timepoint = (datetime.now().strftime("%Y%m%d-%H%M%S"))
-    filename = f'{IMAGEPATH}/het-cam-raw/position{task_position}_{video_frame_timepoint}.jpg'
-    # filename = f'images/position{task_position}_{video_frame_timepoint}.jpg'
-    # # foldername = 'images\'
-    # # filename = foldername+filename
-    # print(filename)
-    # # frame_bytes, frame = global_video_cam.get_frame()
-    # # writing image
-    gif_bytes_io = BytesIO()
-    # store the gif bytes to the IO and open as image
-    gif_bytes_io.write(frame)
-    image = Image.open(gif_bytes_io)
-    # # save as png through a stream
-    # png_bytes_io = BytesIO() # or io.BytesIO()
-    # image.save(png_bytes_io, format='PNG')
-    # # print(png_bytes_io.getvalue()) # outputs the byte stream of the png
-    # image.show()
-    open_cv_image = np.array(image)
-    # rgb channels are in wrong order since the image is from an raspberry camera
-    RGB_img = cv2.cvtColor(open_cv_image, cv2.COLOR_BGR2RGB)
-    cv2.imwrite(filename, RGB_img)
-    print(f"image written {filename}")
-
-    print("Setting lower resolution for webstream")
-    new_resolution = [640, 480]
-    Camera().set_resolution(new_resolution)
-
 
 #-------------------------------------------------------------------------------------
 
@@ -264,52 +177,52 @@ def toggled_status():
         print("no jobs scheduled")
     #     current_status = 'Automatic On'
 
+    # create dummy experiment for now
+    # new_experiment = Experiment(EXPERIMENT_NAME, scheduler, IMAGEPATH, Camera, [0, 90, 180, 270], INTERVAL)
+    recent_experiment = select_experiment()
     # if Automatic On was sent and no jobs are scheduled
     if(current_status == 'Automatic Off') and not(scheduler.get_jobs()):
         print("Switching On")
-        schedule_start = datetime.today()
-        print(f"starting scheduling {schedule_start}")
-        moving_time = 10 # in seconds
-        print(f"moving time is assumed {moving_time} seconds") 
-        task_seperation_increase = moving_time*2
-        task_seperation = 1
-        # instead, create a list - in this list the degrees where pics should be taken are stored
-        # all positions: for degree in range(0, 360, 90)
-        for degree in range(0, 360, 90): # starting angle, stop angle and step angle in degrees (180 = picture at 0 & 90, 270 = pic at 0,90,180)
-            print(degree)
-            schedule_time_movement = schedule_start + timedelta(seconds=task_seperation)
-            schedule_time_picture = schedule_start + timedelta(seconds=moving_time+task_seperation)
-            scheduler.add_job(func=motor_task_creator, trigger='date', run_date=schedule_time_movement, args=[degree], id='move_start'+str(degree))
-            print(f"created moving job {degree} running at {schedule_time_movement}")
-            scheduler.add_job(func=picture_task_creator, trigger='date', run_date=schedule_time_picture, args=[degree], id='picture_start'+str(degree))
-            print(f"created picture job {degree} running at {schedule_time_picture}")
-            task_seperation = task_seperation + task_seperation_increase
-        print(scheduler.get_jobs())
+        print(recent_experiment.experiment_positions)
+        recent_experiment.show_experiment_positions()
+        # start dummy experiment for now
+        recent_experiment.start_experiment()
+        if(recent_experiment.experiment_running):
+            print("Experiment was started")
+        else:
+            print("Experiment could not be started")
 
     else:
         print("Switching Off")
         print(scheduler.get_jobs())
         print("Removing all scheduled jobs")
-        # scheduler.remove_job(j0)
-        scheduler.remove_all_jobs()
-        print(scheduler.get_jobs())
+        recent_experiment.stop_experiment()
+        if(recent_experiment.experiment_running == False):
+            print("Experiment was stopped")
+        else:
+            print("Experiment could not be stopped")
 
     return 'Automatic On' if current_status == 'Automatic Off' else 'Automatic Off'
 
-@app.route('/automatic_stop')
-def automatic_stop():
-    # https://github.com/viniciuschiele/flask-apscheduler
-    # scheduler.pause()
-    print(scheduler.get_jobs())
-    print("Removing all jobs")
-    # scheduler.remove_job(j0)
-    scheduler.remove_all_jobs()
-    print(scheduler.get_jobs())
-    return ("nothing")
+# should be integrated already
+# @app.route('/automatic_stop')
+# def automatic_stop():
+#     # https://github.com/viniciuschiele/flask-apscheduler
+#     # scheduler.pause()
+#     print(scheduler.get_jobs())
+#     print("Removing all jobs")
+#     # scheduler.remove_job(j0)
+#     scheduler.remove_all_jobs()
+#     print(scheduler.get_jobs())
+#     return ("nothing")
 
 @app.route('/picture')
-def picture(pos_name = "custom"):
-    picture_task(pos_name)
+def picture():
+    recent_experiment = select_experiment()
+    recent_experiment.picture_task()
+    print(f"Picture saved in Experiment: {recent_experiment.name}")
+    print(f"There are {len(recent_experiment.saved_positions)} saved positions")
+    print(f"Created at {recent_experiment.saved_positions[-1].timestamp}")
     return ("nothing")
 
 @app.route('/settings')
@@ -322,11 +235,13 @@ def automatic():
 #code gallery
 
 @app.route("/gallery")
-def show_index():
-    raw_image_foldername = f'{IMAGEPATH}/het-cam-raw'
+def show_gallery():
+    recent_experiment = select_experiment()
+    print(recent_experiment.name)
+    raw_image_foldername = f'{recent_experiment.image_path}/{recent_experiment.name}/het-cam-raw/'
     raw_image_list = os.listdir(raw_image_foldername)
     print(raw_image_list)
-    return render_template("gallery.html", images = raw_image_list, images_skeletonized = raw_image_list)
+    return render_template("gallery.html", experiment_foldername = recent_experiment.name, images = raw_image_list)
 
 @app.route("/gallery-skeleton")
 def show_skeleton():
@@ -365,6 +280,26 @@ def show_yolo():
     return render_template("gallery-yolo.html", images = raw_image_list, images_yolonized = yolo_images)
 
 #gallery code end
+
+def select_experiment():
+    print(f"Current database lenght: {len(DATABASE)}")
+    if(len(DATABASE) == 0):
+        new_experiment = Experiment(EXPERIMENT_NAME, scheduler,
+        IMAGEPATH, Camera, EXPERIMENT_POSITIONS, INTERVAL)
+        DATABASE.append(new_experiment)
+        return new_experiment
+    else:
+        try:
+            print("Trying to select the first flagged experiment")
+            for experiment in DATABASE:
+                if(experiment.flag):
+                    return experiment
+            print("No flagged experiments")
+            raise Exception 
+        except:
+            print("Trying to select the last experiment in DB")
+            new_experiment = DATABASE[-1]
+            return new_experiment
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=80, threaded=True)

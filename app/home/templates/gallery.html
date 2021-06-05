@@ -23,10 +23,8 @@
             </div>
               <div class="card-body">
                 {% for name in images %}
-                  <img src="{{ url_for('static', filename='upload/het-cam-raw/' + name) }}" >
-                {% endfor %}
-                {% for name in images2 %}
-                  <img src="{{ url_for('static', filename='upload/het-cam-raw/' + name) }}" >
+                <!-- <img src="{{ url_for('static', filename='upload/het-cam-raw/default_experiment/het-cam-test.jpg') }}" > -->
+                <img src="{{ url_for('static', filename='upload/' + experiment_foldername + '/het-cam-raw/' + name) }}" >
                 {% endfor %}
               </div>
           </div>
