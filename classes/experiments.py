@@ -107,7 +107,7 @@ class Experiment(object):
         frame = self.Camera().get_frame()
         video_frame_timepoint = (datetime.now().strftime("%Y%m%d-%H%M%S"))
         filename = f'position{self.current_position}_{video_frame_timepoint}.jpg'
-        file_in_foldername = f'{self.image_path}/{self.name}/{self.raw_dir}/{filename}.jpg'
+        file_in_foldername = f'{self.image_path}/{self.name}/{self.raw_dir}/{filename}'
         gif_bytes_io = BytesIO()
         gif_bytes_io.write(frame)
         image = Image.open(gif_bytes_io)
@@ -191,7 +191,7 @@ class Position(object):
         print(f"raw image should be sent to analyze objects")
         print(f"Calculating for position {self.name}")
         print(type(self.raw_image))
-        file_in_foldername = f"{self.exp_foldername}/{self.yolo_dir}/{self.filename}"
+        file_in_foldername = f"{self.exp_foldername}/{self.raw_dir}/{self.filename}"
         print(file_in_foldername)
         detect(file_in_foldername, self.exp_foldername, self.yolo_dir)
         # self.yolo_image = 
