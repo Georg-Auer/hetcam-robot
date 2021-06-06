@@ -203,6 +203,8 @@ def automatic():
 # buttons, scheduler end
 
 #code gallery
+# images could be sent directly:
+# https://stackoverflow.com/questions/56946969/how-to-send-an-image-directly-from-flask-server-to-html
 
 @app.route("/gallery")
 def show_gallery():
