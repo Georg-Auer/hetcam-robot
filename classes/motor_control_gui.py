@@ -1,5 +1,5 @@
 
-from classes.pyserial_connection_arduino import connect_to_arduino, list_available_ports
+from pyserial_connection_arduino import connect_to_arduino, list_available_ports
 import numpy as np
 try:
     from dearpygui import core, simple
