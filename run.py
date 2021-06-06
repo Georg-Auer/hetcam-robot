@@ -141,7 +141,7 @@ def move_deg():
     recent_experiment = select_experiment()
     print(recent_experiment.name)
     recent_experiment.planned_position = degree
-    recent_experiment.motor_position
+    recent_experiment.motor_position()
     return '''<h1>Moving to: {}</h1>'''.format(degree)
     # return ("nothing")
 

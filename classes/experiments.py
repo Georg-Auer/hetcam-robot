@@ -249,31 +249,3 @@ if __name__ == '__main__':
     # print(test_position.timestamp)
 #---------------------------------------------------------
 
-
-
-
-
-# @app.route('/move_deg')
-# def move_deg():
-#     degree = 0
-#     degree = int(request.args.get('degree'))
-#     if(degree >= 280):
-#         degree = 270
-#     if(degree <= -90):
-#         degree = -90
-#     print(f"Moving to {degree}°")
-#     motor_position(degree)
-#     return '''<h1>Moving to: {}</h1>'''.format(degree)
-#     # return ("nothing")
-
-# # @app.route('/picture')
-# def picture(pos_name = "custom"):
-#     picture_task(pos_name)
-#     return ("nothing")
-
-# # @app.route('/settings')
-# def automatic():
-#     print("settings")
-#     return ("nothing")
-
-# # buttons, scheduler end
