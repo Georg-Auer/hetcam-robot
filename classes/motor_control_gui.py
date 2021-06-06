@@ -1,7 +1,10 @@
-from dearpygui import core, simple
-from pyserial_connection_arduino import connect_to_arduino, list_available_ports
-import numpy as np
 
+from classes.pyserial_connection_arduino import connect_to_arduino, list_available_ports
+import numpy as np
+try:
+    from dearpygui import core, simple
+except:
+    print("dearpygui not installed")
 # for saving variables
 comport = '/dev/ttyACM0'
 motor0_enable = 0

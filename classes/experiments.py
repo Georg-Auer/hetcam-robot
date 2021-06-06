@@ -4,6 +4,9 @@ from PIL import Image
 import cv2
 import numpy as np
 import os
+from classes.pyserial_connection_arduino import connect_to_arduino, list_available_ports
+from classes.bifurcation_detection import prepare_and_analyze
+
 class Experiment(object):
     def __init__(self, name, scheduler, image_path,
     Camera, experiment_positions = [], interval_minutes = 5):
@@ -20,9 +23,15 @@ class Experiment(object):
         self.experiment_running = False
         self.flag = False
         self.creation_time = datetime.today()
+        self.exp_foldername = f'{self.image_path}/{self.name}'
+        self.raw_dir = "het-cam-raw"
+        self.skeleton_dir = "het-cam-skeleton"
+        self.yolo_dir = "het-cam-yolo"
+        self.img_variant_folders = [self.raw_dir,self.skeleton_dir,self.yolo_dir]
+        self.create_directories()
 
-    def show_timeframe(self):
-        print(f"Time between imaging in experiment {self.name} set to {self.time_between} minutes")
+    # def show_timeframe(self):
+    #     print(f"Time between imaging in experiment {self.name} set to {self.time_between} minutes")
     
     # def go_to_xyz(self, position_in_degree):
     #     self.planned_position = position_in_degree
@@ -102,17 +111,8 @@ class Experiment(object):
         print(f"task: start to take picture {self.current_position}")
         frame = self.Camera().get_frame()
         video_frame_timepoint = (datetime.now().strftime("%Y%m%d-%H%M%S"))
-        foldername = f'{self.image_path}/{self.name}/het-cam-raw/'
-        filename = f'{self.image_path}/{self.name}/het-cam-raw/position{self.current_position}_{video_frame_timepoint}.jpg'
-        
-        # Create target Directory if don't exist
-        if not os.path.exists(foldername):
-            os.makedirs(foldername) # also creates non-existant intermediaries
-            print("Directory " , foldername ,  " Created ")
-        else:    
-            print("Directory " , foldername ,  " already exists")
-        
-        
+        filename = f'position{self.current_position}_{video_frame_timepoint}.jpg'
+        file_in_foldername = f'{self.image_path}/{self.name}/{self.raw_dir}/{filename}.jpg'
         gif_bytes_io = BytesIO()
         gif_bytes_io.write(frame)
         image = Image.open(gif_bytes_io)
@@ -121,14 +121,26 @@ class Experiment(object):
         # for testing only
         # cv2.imshow('image',RGB_img)
         # cv2.waitKey(0)
-        cv2.imwrite(filename, RGB_img)
-        print(f"image written {filename}")
+        cv2.imwrite(file_in_foldername, RGB_img)
+        print(f"image written {file_in_foldername}")
         print("Setting lower resolution for webstream")
         new_resolution = [640, 480]
         self.Camera().set_resolution(new_resolution)
         # create new position with image
-        self.saved_positions.append(Position(self.name, self.current_position, filename, RGB_img))
-    
+        self.saved_positions.append(Position(self.name, self.current_position,
+        self.exp_foldername, self.raw_dir, self.skeleton_dir,
+        self.yolo_dir, filename, RGB_img))
+
+    def create_directories(self):
+        for variant in self.img_variant_folders:
+            foldername = f'{self.exp_foldername}/{variant}/'
+            # Create target Directory if don't exist
+            if not os.path.exists(foldername):
+                os.makedirs(foldername) # also creates non-existant intermediaries
+                print("Directory " , foldername ,  " Created ")
+            else:    
+                print("Directory " , foldername ,  " already exists")
+
     def motor_position(self):
         position_in_degree = self.planned_position
         print(f"motor_position {position_in_degree}")
@@ -138,8 +150,10 @@ class Experiment(object):
         step_position_arduino = int(position_in_degree/90*1600)
         print(f"Sending: {step_position_arduino} steps")
         try:
-            results = np.array(connect_to_arduino(comport,motor0_enable,motor0_direction,step_position_arduino,
-                motor1_enable,motor1_direction,motor1_position,motor2_enable,motor2_direction,motor2_position,motor3_enable,motor3_direction,motor3_position))
+            # results = np.array(connect_to_arduino(comport = '/dev/ttyACM0',motor0_enable,motor0_direction,step_position_arduino,
+            #     motor1_enable,motor1_direction,motor1_position,motor2_enable,motor2_direction,motor2_position,motor3_enable,motor3_direction,motor3_position))
+            # enabled = 0, disabled = 1; 0 = counterclockwise 1 = clockwise
+            results = np.array(connect_to_arduino('/dev/ttyACM0', 0, 0, step_position_arduino))
             print(f"Received values: {results}")
             # this could be parsed and converted to degree
             # or just assume motor has moved to destination
@@ -151,12 +165,16 @@ class Position(object):
     # raw_image, skeletal_image,
     # feature_bifurcations, feature_endings, yolo_image, yolo_classes,
     # yolo_coordinates, yolo_poi_circles, features_bifurcations_poi, feature_endings_poi
-    def __init__(self, name, xyz_position_in_degree, filename, RGB_img):
+    def __init__(self, name, xyz_position_in_degree, exp_foldername, raw_dir, skeleton_dir, yolo_dir, filename, RGB_img):
         self.name = name
         self.position = xyz_position_in_degree # z stays the same in this robot
         self.timestamp = datetime.now().strftime("%Y%m%d-%H%M%S")
         self.filename = filename
         self.raw_image = RGB_img
+        self.exp_foldername = exp_foldername
+        self.raw_dir = raw_dir
+        self.skeleton_dir = skeleton_dir
+        self.yolo_dir = yolo_dir
         # should it take a starting image here?
         # video_frame_timepoint = (datetime.now().strftime("%Y%m%d-%H%M%S"))
         # filename = f'{IMAGEPATH}/het-cam-raw/position{task_position}_{video_frame_timepoint}.jpg'
@@ -165,8 +183,18 @@ class Position(object):
     #     print(f"raw image should be taken")
     #     self.raw_image = take_image(self)
     def calculate_skeleton(self):
-        print(f"raw image should be sent to analyze skeleton")
-        self.skeletal_image = analyze_skeleton(self.raw_image)
+        print(f"raw image is sent to analyze skeleton")
+        print(f"Calculating for position {self.name}")
+        print(type(self.raw_image))
+        self.skeletal_image, self.x_terminations, self.y_terminations, self.x_bifurcations, self.y_bifurcations = prepare_and_analyze(self.raw_image)
+        print(self.skeletal_image,self.x_terminations, self.y_terminations, self.x_bifurcations, self.y_bifurcations)
+        file_in_foldername = f"{self.exp_foldername}/{self.skeleton_dir}/{self.filename}"
+        # filename = f"{self.exp_foldername}/{self.name}"
+        # this is wrong, it creates
+        # app/base/static/upload/default_experiment/default_experiment
+        print(file_in_foldername)
+        cv2.imwrite(file_in_foldername, self.skeletal_image)
+
     def calculate_yolo(self):
         print(f"raw image should be sent to analyze objects")
         self.yolo_image = analyze_yolo(self.raw_image)

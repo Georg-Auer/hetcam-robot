@@ -44,7 +44,6 @@ from werkzeug.utils import secure_filename
 # import old 
 import time
 import os
-from pyserial_connection_arduino import connect_to_arduino, list_available_ports
 import numpy as np
 from flask_apscheduler import APScheduler
 import cv2
@@ -88,21 +87,6 @@ scheduler = APScheduler()
 # scheduler.api_enabled = True
 scheduler.init_app(app)
 scheduler.start()
-
-# setting up variables for sending, needs to be fixed 
-comport = '/dev/ttyACM0' # this should be set to the standard address of the microcontroller
-motor0_enable = 0
-motor0_direction = 0
-motor0_position = 0
-motor1_enable = 0
-motor1_direction = 0
-motor1_position = 0
-motor2_enable = 0
-motor2_direction = 0
-motor2_position = 0
-motor3_enable = 0
-motor3_direction = 0
-motor3_position = 0
 
 INTERVAL = 1 # experiment time in minutes
 EXPERIMENT_NAME = "default_experiment"
@@ -166,8 +150,6 @@ def move_deg():
 @app.route('/get_toggled_status') 
 def toggled_status():
     current_status = request.args.get('status')
-    # instead of if, create a list, send list and do for items in list
-    # this way, only in activated positions are scheduled
     if(scheduler.get_jobs()):
         print(bool(scheduler.get_jobs()))
         print("jobs scheduled")
@@ -204,18 +186,6 @@ def toggled_status():
 
     return 'Automatic On' if current_status == 'Automatic Off' else 'Automatic Off'
 
-# should be integrated already
-# @app.route('/automatic_stop')
-# def automatic_stop():
-#     # https://github.com/viniciuschiele/flask-apscheduler
-#     # scheduler.pause()
-#     print(scheduler.get_jobs())
-#     print("Removing all jobs")
-#     # scheduler.remove_job(j0)
-#     scheduler.remove_all_jobs()
-#     print(scheduler.get_jobs())
-#     return ("nothing")
-
 @app.route('/picture')
 def picture():
     recent_experiment = select_experiment()
@@ -238,46 +208,77 @@ def automatic():
 def show_gallery():
     recent_experiment = select_experiment()
     print(recent_experiment.name)
-    raw_image_foldername = f'{recent_experiment.image_path}/{recent_experiment.name}/het-cam-raw/'
+    raw_image_foldername = f'{recent_experiment.image_path}/{recent_experiment.name}/{recent_experiment.raw_dir}/'
     raw_image_list = os.listdir(raw_image_foldername)
     print(raw_image_list)
-    return render_template("gallery.html", experiment_foldername = recent_experiment.name, images = raw_image_list)
+    foldername_gallery = f'{recent_experiment.name}/{recent_experiment.raw_dir}/'
+    return render_template("gallery.html", experiment_name = recent_experiment.name, 
+    image_foldername = foldername_gallery, images = raw_image_list)
 
 @app.route("/gallery-skeleton")
-def show_skeleton():
-    raw_image_foldername = f'{IMAGEPATH}/het-cam-raw'
-    raw_image_list = os.listdir(raw_image_foldername)
-    skeleton_image_foldername = f'{IMAGEPATH}/het-cam-skeleton'
-    skeleton_images = os.listdir(skeleton_image_foldername)
-    # find skeleton only for images w/o skeleton
-    unskeletized_raw_images = list(set(raw_image_list) - set(skeleton_images))
+def show_gallery_skeleton():
+    recent_experiment = select_experiment()
+    print(recent_experiment.name)
 
-    from bifurcation_detection import prepare_and_analyze
-    scale_percent = 40
-    for image in unskeletized_raw_images:
-        prepare_and_analyze(image, raw_image_foldername, skeleton_image_foldername, scale_percent)
-    # include newly created images for gallery
-    skeleton_images = os.listdir(skeleton_image_foldername)
-    print(skeleton_images)
-    return render_template("gallery-skeleton.html", images = raw_image_list, images_skeletonized = skeleton_images)
+    # this should be done via button or algorithm
+    # in times where cpu load is low or after experiment
+    # recent_experiment.saved_positions.calculate_skeleton()
+    for position in recent_experiment.saved_positions:
+        position.calculate_skeleton()
+        # recent_experiment.saved_positions[-1].timestamp
+
+    skeleton_image_foldername = f'{recent_experiment.image_path}/{recent_experiment.name}/{recent_experiment.skeleton_dir}/'
+    print(f"skeleton img foldername: {skeleton_image_foldername}")
+    skeleton_image_list = os.listdir(skeleton_image_foldername)
+    print(skeleton_image_list)
+    foldername_gallery = f'{recent_experiment.name}/{recent_experiment.skeleton_dir}/'
+    return render_template("gallery.html", image_foldername = foldername_gallery,
+    experiment_name = recent_experiment.name, images = skeleton_image_list)
 
 @app.route("/gallery-yolo")
-def show_yolo():
-    raw_image_foldername = f'{IMAGEPATH}/het-cam-raw'
-    raw_image_list = os.listdir(raw_image_foldername)
-    yolo_image_foldername = f'{IMAGEPATH}/het-cam-yolo'
-    yolo_images = os.listdir(yolo_image_foldername)
-    unyolonized_raw_images = list(set(raw_image_list) - set(yolo_images))
+def show_gallery_yolo():
+    recent_experiment = select_experiment()
+    print(recent_experiment.name)
+    yolo_image_foldername = f'{recent_experiment.image_path}/{recent_experiment.name}/het-cam-yolo/'
+    yolo_image_list = os.listdir(yolo_image_foldername)
+    print(yolo_image_list)
+    return render_template("gallery.html", experiment_name = recent_experiment.name, images = yolo_image_list)
 
-    from detect import detect
-    # detect()
-    # scale_percent = 40
-    for image in unyolonized_raw_images:
-        detect(image, raw_image_foldername, yolo_image_foldername)
+# @app.route("/gallery-skeleton")
+# def show_skeleton():
+#     raw_image_foldername = f'{IMAGEPATH}/het-cam-raw'
+#     raw_image_list = os.listdir(raw_image_foldername)
+#     skeleton_image_foldername = f'{IMAGEPATH}/het-cam-skeleton'
+#     skeleton_images = os.listdir(skeleton_image_foldername)
+#     # find skeleton only for images w/o skeleton
+#     unskeletized_raw_images = list(set(raw_image_list) - set(skeleton_images))
 
-    yolo_images = os.listdir(yolo_image_foldername)
-    print(yolo_images)
-    return render_template("gallery-yolo.html", images = raw_image_list, images_yolonized = yolo_images)
+#     from bifurcation_detection import prepare_and_analyze
+#     scale_percent = 40
+#     for image in unskeletized_raw_images:
+#         prepare_and_analyze(image, raw_image_foldername, skeleton_image_foldername, scale_percent)
+#     # include newly created images for gallery
+#     skeleton_images = os.listdir(skeleton_image_foldername)
+#     print(skeleton_images)
+#     return render_template("gallery-skeleton.html", images = raw_image_list, images_skeletonized = skeleton_images)
+
+# @app.route("/gallery-yolo")
+# def show_yolo():
+#     raw_image_foldername = f'{IMAGEPATH}/het-cam-raw'
+#     raw_image_list = os.listdir(raw_image_foldername)
+#     yolo_image_foldername = f'{IMAGEPATH}/het-cam-yolo'
+#     yolo_images = os.listdir(yolo_image_foldername)
+#     unyolonized_raw_images = list(set(raw_image_list) - set(yolo_images))
+
+#     from detect import detect
+#     # detect()
+#     # scale_percent = 40
+#     for image in unyolonized_raw_images:
+#         detect(image, raw_image_foldername, yolo_image_foldername)
+
+#     yolo_images = os.listdir(yolo_image_foldername)
+#     print(yolo_images)
+#     return render_template("gallery-yolo.html", images = raw_image_list, images_yolonized = yolo_images)
 
 #gallery code end
 
