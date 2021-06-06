@@ -22,6 +22,7 @@ class Experiment(object):
         self.Camera = Camera
         self.experiment_running = False
         self.flag = False
+        self.motor_comport = '/dev/ttyACM0'
         self.creation_time = datetime.today()
         self.exp_foldername = f'{self.image_path}/{self.name}'
         self.raw_dir = "het-cam-raw"
@@ -32,12 +33,6 @@ class Experiment(object):
 
     # def show_timeframe(self):
     #     print(f"Time between imaging in experiment {self.name} set to {self.time_between} minutes")
-    
-    # def go_to_xyz(self, position_in_degree):
-    #     self.planned_position = position_in_degree
-    #     # note: xy is defined through degree,
-    #     # z is always the same distance between object and camera
-    #     self.motor_position() # moves the arm
 
     def show_experiment_positions(self):
         print("These are all planned positions")
@@ -153,7 +148,7 @@ class Experiment(object):
             # results = np.array(connect_to_arduino(comport = '/dev/ttyACM0',motor0_enable,motor0_direction,step_position_arduino,
             #     motor1_enable,motor1_direction,motor1_position,motor2_enable,motor2_direction,motor2_position,motor3_enable,motor3_direction,motor3_position))
             # enabled = 0, disabled = 1; 0 = counterclockwise 1 = clockwise
-            results = np.array(connect_to_arduino('/dev/ttyACM0', 0, 0, step_position_arduino))
+            results = np.array(connect_to_arduino(self.motor_comport, 0, 0, step_position_arduino))
             print(f"Received values: {results}")
             # this could be parsed and converted to degree
             # or just assume motor has moved to destination
