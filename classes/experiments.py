@@ -6,7 +6,7 @@ import numpy as np
 import os
 from classes.pyserial_connection_arduino import connect_to_arduino, list_available_ports
 from classes.bifurcation_detection import prepare_and_analyze
-
+from detect import detect
 class Experiment(object):
     def __init__(self, name, scheduler, image_path,
     Camera, experiment_positions = [], interval_minutes = 5):
@@ -184,18 +184,18 @@ class Position(object):
         self.skeletal_image, self.x_terminations, self.y_terminations, self.x_bifurcations, self.y_bifurcations = prepare_and_analyze(self.raw_image)
         print(self.skeletal_image,self.x_terminations, self.y_terminations, self.x_bifurcations, self.y_bifurcations)
         file_in_foldername = f"{self.exp_foldername}/{self.skeleton_dir}/{self.filename}"
-        # filename = f"{self.exp_foldername}/{self.name}"
-        # this is wrong, it creates
-        # app/base/static/upload/default_experiment/default_experiment
         print(file_in_foldername)
         cv2.imwrite(file_in_foldername, self.skeletal_image)
 
     def calculate_yolo(self):
         print(f"raw image should be sent to analyze objects")
-        self.yolo_image = analyze_yolo(self.raw_image)
-        # self.yolo_classes = analyze_yolo(self.raw)
-        # self.yolo_coordinates = analyze_yolo(self.raw)
-        # self.yolo_classes = analyze_yolo(self.raw)
+        print(f"Calculating for position {self.name}")
+        print(type(self.raw_image))
+        file_in_foldername = f"{self.exp_foldername}/{self.yolo_dir}/{self.filename}"
+        print(file_in_foldername)
+        detect(file_in_foldername, self.exp_foldername, self.yolo_dir)
+        # self.yolo_image = 
+        # this should also get bounding boxes and found classes
 
 # def take_image(self):
 #     print("taking image")

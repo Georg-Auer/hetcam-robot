@@ -153,15 +153,14 @@ def detect2(opt):
 
 # py -3.7 detect.py --weights weights/best.pt --img 416 --conf 0.4 --project app/base/static/upload --exist-ok --name het-cam-yolo --source app/base/static/upload/het-cam-raw
 
-def detect(img_to_analyze, raw_image_foldername, yolo_image_foldername):
+def detect(raw_image_foldername, exp_foldername, yolo_dir):
     # ignore parser for now and add_argument default value as workaround
     # yolo_image_foldername unused!
-    raw_image_name = f'{raw_image_foldername}/{img_to_analyze}'
 
     parser = argparse.ArgumentParser()
     parser.add_argument('--weights', nargs='+', type=str, default='weights/best.pt', help='model.pt path(s)')
     # parser.add_argument('--source', type=str, default='app/base/static/upload/het-cam-raw', help='source')  # file/folder, 0 for webcam
-    parser.add_argument('--source', type=str, default=f'{raw_image_name}', help='source')  # file/folder, 0 for webcam
+    parser.add_argument('--source', type=str, default=f'{raw_image_foldername}', help='source')  # file/folder, 0 for webcam
     parser.add_argument('--img-size', type=int, default=416, help='inference size (pixels)') #default 640
     parser.add_argument('--conf-thres', type=float, default=0.4, help='object confidence threshold')
     parser.add_argument('--iou-thres', type=float, default=0.45, help='IOU threshold for NMS')
@@ -175,8 +174,10 @@ def detect(img_to_analyze, raw_image_foldername, yolo_image_foldername):
     parser.add_argument('--agnostic-nms', action='store_true', help='class-agnostic NMS')
     parser.add_argument('--augment', action='store_true', help='augmented inference')
     parser.add_argument('--update', action='store_false', help='update all models', default=False)
-    parser.add_argument('--project', default='app/base/static/upload', help='save results to project/name')
-    parser.add_argument('--name', default='het-cam-yolo', help='save results to project/name')
+    parser.add_argument('--project', default=f'{exp_foldername}', help='save results to project/name')
+    parser.add_argument('--name', default=f'{yolo_dir}', help='save results to project/name')
+    # parser.add_argument('--project', default='app/base/static/upload', help='save results to project/name')
+    # parser.add_argument('--name', default='het-cam-yolo', help='save results to project/name')
     parser.add_argument('--exist-ok', action='store_true', help='existing project/name ok, do not increment', default=True)
     parser.add_argument('--line-thickness', default=3, type=int, help='bounding box thickness (pixels)')
     parser.add_argument('--hide-labels', default=False, action='store_false', help='hide labels')
