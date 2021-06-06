@@ -33,6 +33,7 @@ def connect_to_arduino(comport,
         # Send a list
         list_ = [motor0_enable, motor0_direction, motor0_position, motor1_enable, motor1_direction,  motor1_position,
             motor2_enable, motor2_direction, motor2_position, motor3_enable, motor3_direction, motor3_position]
+        print(list_)
         list_size = link.tx_obj(list_)
         send_size += list_size
         
