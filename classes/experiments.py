@@ -202,35 +202,17 @@ class Position(object):
 #     # image = cv2-image(self.name, self.actualposition??)
 #     # return image
 
-def analyze_skeleton(self):
-    print("taking image")
-    # image = cv2-image
-    # return image, xy_coordinates
+# def analyze_skeleton(self):
+#     print("taking image")
+#     # image = cv2-image
+#     # return image, xy_coordinates
 
-def analyze_yolo(self):
-    print("taking image")
-    # image = cv2-image
-    # return image, object_bounding_box
+# def analyze_yolo(self):
+#     print("taking image")
+#     # image = cv2-image
+#     # return image, object_bounding_box
 
 if __name__ == '__main__':
-    # het = Experiment("Nr. 1", [0, 90, 180, 270], 5)
-    # het.show_timeframe()
-    # print(het.experiment_positions)  
-    # het.experiment_running
-    # het.toggle_experiment_running()
-    # print(het.experiment_running)
-    # het.toggle_experiment_running()
-    # print(het.experiment_running)
-    # print(f"Current pos: {het.current_position}")
-    # het.save_position()
-    # het.current_position = 90
-    # het.save_position()
-    # print(f"Current pos: {het.current_position}")
-    # print(het.show_saved_positions())
-    # for element in het.saved_positions:
-    #     print(element.name)
-    #     print(element.position)
-    #     print(element.timestamp)
 
     het2 = Experiment("Nr. 1", [0, 90, 180, 270], 5)
     print(het2.experiment_positions)
