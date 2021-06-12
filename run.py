@@ -256,10 +256,13 @@ def show_yolo():
 def automatic():
     print("experiments")
     print(DATABASE)
-    namefromwebsite = request.args.get('namefromwebsite')
+    experiment_name = request.args.get('experiment_name')
+    print("experiment name:")
+    print(experiment_name)
+    # this cannto work for now !!!!!!!!!!!!!!!!!!!!!!
     experiment_positions = request.args.get('experiment_positions')
     interval = request.args.get('interval')
-    new_experiment = Experiment(namefromwebsite, scheduler,
+    new_experiment = Experiment(experiment_name, scheduler,
     IMAGEPATH, Camera, experiment_positions, interval)
 
     # unflag all experiments

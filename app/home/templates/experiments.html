@@ -1,0 +1,72 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Blank Page {% endblock %} 
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+    <div class="panel-header panel-header-sm">
+    </div>
+    <div class="content">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="card">
+            <div class="card-header">
+              <h5 class="title">
+                Blank Page
+              </h5>
+              <p class="category">
+                  Simple starter page
+              </p>
+            </div>
+            <div class="card-body">
+              <div class="row">
+                <div class="col-md-12">
+
+                  <div class="experiment-info">
+                    <div class='experiment_name'>Demo Experiment Name</div>
+                  </div>
+                  <a href=# id=toggle-switch>
+                    <button>   
+                    <!-- <style>
+                      .toggle.ios, .toggle-on.ios, .toggle-off.ios { border-radius: 1px; }
+                      .toggle.ios .toggle-handle { border-radius: 1px; }
+                    </style> -->
+                    <input type="checkbox" class='toggle' checked data-toggle="toggle" data-onstyle="success" data-style="ios">
+                    </button>
+                  </a>
+
+
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+{% endblock content %}
+
+
+<script>
+  $(document).ready(function() {
+    $('.toggle').click(function() {
+    var current_experiment_name = $('.experiment_name').text();
+    $.ajax({
+      url: "/get_experiment_name",
+      type: "get",
+      data: {status: current_experiment_name},
+      success: function(response) {
+        $(".experiment_name").html(response);
+      },
+      error: function(xhr) {
+        //Do Something to handle error
+      }
+    });
+    });
+  });
+</script>
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}{% endblock javascripts %}
