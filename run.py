@@ -138,10 +138,10 @@ def move_deg():
     if(degree <= -90):
         degree = -90
     print(f"Moving to {degree}°")
-    recent_experiment = select_experiment()
-    print(recent_experiment.name)
-    recent_experiment.planned_position = degree
-    recent_experiment.motor_position()
+    current_experiment = select_experiment()
+    print(current_experiment.name)
+    current_experiment.planned_position = degree
+    current_experiment.motor_position()
     return '''<h1>Moving to: {}</h1>'''.format(degree)
     # return ("nothing")
 
@@ -161,15 +161,15 @@ def toggled_status():
 
     # create dummy experiment for now
     # new_experiment = Experiment(EXPERIMENT_NAME, scheduler, IMAGEPATH, Camera, [0, 90, 180, 270], INTERVAL)
-    recent_experiment = select_experiment()
+    current_experiment = select_experiment()
     # if Automatic On was sent and no jobs are scheduled
     if(current_status == 'Automatic Off') and not(scheduler.get_jobs()):
         print("Switching On")
-        print(recent_experiment.experiment_positions)
-        recent_experiment.show_experiment_positions()
+        print(current_experiment.experiment_positions)
+        current_experiment.show_experiment_positions()
         # start dummy experiment for now
-        recent_experiment.start_experiment()
-        if(recent_experiment.experiment_running):
+        current_experiment.start_experiment()
+        if(current_experiment.experiment_running):
             print("Experiment was started")
         else:
             print("Experiment could not be started")
@@ -178,8 +178,8 @@ def toggled_status():
         print("Switching Off")
         print(scheduler.get_jobs())
         print("Removing all scheduled jobs")
-        recent_experiment.stop_experiment()
-        if(recent_experiment.experiment_running == False):
+        current_experiment.stop_experiment()
+        if(current_experiment.experiment_running == False):
             print("Experiment was stopped")
         else:
             print("Experiment could not be stopped")
@@ -188,16 +188,11 @@ def toggled_status():
 
 @app.route('/picture')
 def picture():
-    recent_experiment = select_experiment()
-    recent_experiment.picture_task()
-    print(f"Picture saved in Experiment: {recent_experiment.name}")
-    print(f"There are {len(recent_experiment.saved_positions)} saved positions")
-    print(f"Created at {recent_experiment.saved_positions[-1].timestamp}")
-    return ("nothing")
-
-@app.route('/settings')
-def automatic():
-    print("settings")
+    current_experiment = select_experiment()
+    current_experiment.picture_task()
+    print(f"Picture saved in Experiment: {current_experiment.name}")
+    print(f"There are {len(current_experiment.saved_positions)} saved positions")
+    print(f"Created at {current_experiment.saved_positions[-1].timestamp}")
     return ("nothing")
 
 # buttons, scheduler end
@@ -208,83 +203,85 @@ def automatic():
 
 @app.route("/gallery")
 def show_gallery():
-    recent_experiment = select_experiment()
-    print(recent_experiment.name)
-    raw_image_foldername = f'{recent_experiment.image_path}/{recent_experiment.name}/{recent_experiment.raw_dir}/'
+    current_experiment = select_experiment()
+    print(current_experiment.name)
+    raw_image_foldername = f'{current_experiment.image_path}/{current_experiment.name}/{current_experiment.raw_dir}/'
     raw_image_list = os.listdir(raw_image_foldername)
     print(raw_image_list)
-    foldername_gallery = f'{recent_experiment.name}/{recent_experiment.raw_dir}/'
-    return render_template("gallery.html", experiment_name = recent_experiment.name, 
+    foldername_gallery = f'{current_experiment.name}/{current_experiment.raw_dir}/'
+    return render_template("gallery.html", experiment_name = current_experiment.name, 
     image_foldername = foldername_gallery, images = raw_image_list)
 
 @app.route("/gallery-skeleton")
 def show_gallery_skeleton():
-    recent_experiment = select_experiment()
-    print(recent_experiment.name)
+    current_experiment = select_experiment()
+    print(current_experiment.name)
 
     # this should be done via button or algorithm
     # in times where cpu load is low or after experiment
-    # recent_experiment.saved_positions.calculate_skeleton()
-    for position in recent_experiment.saved_positions:
+    # current_experiment.saved_positions.calculate_skeleton()
+    for position in current_experiment.saved_positions:
         position.calculate_skeleton()
-        # recent_experiment.saved_positions[-1].timestamp
+        # current_experiment.saved_positions[-1].timestamp
 
-    skeleton_image_foldername = f'{recent_experiment.image_path}/{recent_experiment.name}/{recent_experiment.skeleton_dir}/'
+    skeleton_image_foldername = f'{current_experiment.image_path}/{current_experiment.name}/{current_experiment.skeleton_dir}/'
     print(f"skeleton img foldername: {skeleton_image_foldername}")
     skeleton_image_list = os.listdir(skeleton_image_foldername)
     print(skeleton_image_list)
-    foldername_gallery = f'{recent_experiment.name}/{recent_experiment.skeleton_dir}/'
+    foldername_gallery = f'{current_experiment.name}/{current_experiment.skeleton_dir}/'
     return render_template("gallery.html", image_foldername = foldername_gallery,
-    experiment_name = recent_experiment.name, images = skeleton_image_list)
+    experiment_name = current_experiment.name, images = skeleton_image_list)
 
 @app.route("/gallery-yolo")
 def show_yolo():
-    recent_experiment = select_experiment()
-    print(recent_experiment.name)
+    current_experiment = select_experiment()
+    print(current_experiment.name)
 
     # this should be done via button or algorithm
     # in times where cpu load is low or after experiment
-    # recent_experiment.saved_positions.calculate_yolo()
-    for position in recent_experiment.saved_positions:
+    # current_experiment.saved_positions.calculate_yolo()
+    for position in current_experiment.saved_positions:
         position.calculate_yolo()
-        # recent_experiment.saved_positions[-1].timestamp
+        # current_experiment.saved_positions[-1].timestamp
 
-    yolo_image_foldername = f'{recent_experiment.image_path}/{recent_experiment.name}/{recent_experiment.yolo_dir}/'
+    yolo_image_foldername = f'{current_experiment.image_path}/{current_experiment.name}/{current_experiment.yolo_dir}/'
     print(f"yolo img foldername: {yolo_image_foldername}")
     yolo_image_list = os.listdir(yolo_image_foldername)
     print(yolo_image_list)
-    foldername_gallery = f'{recent_experiment.name}/{recent_experiment.yolo_dir}/'
+    foldername_gallery = f'{current_experiment.name}/{current_experiment.yolo_dir}/'
     return render_template("gallery.html", image_foldername = foldername_gallery,
-    experiment_name = recent_experiment.name, images = yolo_image_list)
+    experiment_name = current_experiment.name, images = yolo_image_list)
 
-# @app.route("/gallery-yolo")
-# def show_yolo():
-#     raw_image_foldername = f'{IMAGEPATH}/het-cam-raw'
-#     raw_image_list = os.listdir(raw_image_foldername)
-#     yolo_image_foldername = f'{IMAGEPATH}/het-cam-yolo'
-#     yolo_images = os.listdir(yolo_image_foldername)
-#     unyolonized_raw_images = list(set(raw_image_list) - set(yolo_images))
+@app.route('/experiments')
+def automatic():
+    print("experiments")
+    print(DATABASE)
+    namefromwebsite = request.args.get('namefromwebsite')
+    experiment_positions = request.args.get('experiment_positions')
+    interval = request.args.get('interval')
+    new_experiment = Experiment(namefromwebsite, scheduler,
+    IMAGEPATH, Camera, experiment_positions, interval)
 
-#     from detect import detect
-#     # detect()
-#     # scale_percent = 40
-#     for image in unyolonized_raw_images:
-#         detect(image, raw_image_foldername, yolo_image_foldername)
-
-#     yolo_images = os.listdir(yolo_image_foldername)
-#     print(yolo_images)
-#     return render_template("gallery-yolo.html", images = raw_image_list, images_yolonized = yolo_images)
-
-#gallery code end
+    # unflag all experiments
+    for experiment in DATABASE:
+        if(experiment.flag):
+            experiment.flag = False
+    DATABASE.append(new_experiment)
+    new_experiment.flag = True
+    # DATABASE.append(new_experiment)
+    return ("nothing")
 
 def select_experiment():
     print(f"Current database lenght: {len(DATABASE)}")
     if(len(DATABASE) == 0):
+        print("No experiments found, creating default experiment")
         new_experiment = Experiment(EXPERIMENT_NAME, scheduler,
         IMAGEPATH, Camera, EXPERIMENT_POSITIONS, INTERVAL)
         DATABASE.append(new_experiment)
         return new_experiment
     else:
+        # try to select experiment
+        # return render_template("gallery.html", image_foldername = foldername_gallery)
         try:
             print("Trying to select the first flagged experiment")
             for experiment in DATABASE:
