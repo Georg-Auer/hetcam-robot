@@ -256,35 +256,46 @@ def show_yolo():
 def experiments():
     print("experiments")
     print(DATABASE)
+    current_experiment = select_experiment()
+    print(current_experiment.name)
+    # DATABASE.append(new_experiment)
+    return render_template("experiments.html", experiment_name = current_experiment.name)
+
+@app.route('/get_experiment_status') 
+# @app.route('/experiments')
+def experiment_status():
+    # current_experiment = request.args.get('status')
+    # print(current_experiment)
+    # current_experiment = select_experiment()
+
+    # this is sadly not working, needs to work first!
     experiment_name = request.args.get('experiment_name')
     print("experiment name:")
     print(experiment_name)
+
     # this cannto work for now !!!!!!!!!!!!!!!!!!!!!!
     # experiment_positions = request.args.get('experiment_positions')
     # interval = request.args.get('interval')
     # new_experiment = Experiment(experiment_name, scheduler,
     # IMAGEPATH, Camera, experiment_positions, interval)
-    new_experiment = Experiment(experiment_name, scheduler,
-    IMAGEPATH, Camera, EXPERIMENT_POSITIONS, INTERVAL)
 
-    # unflag all experiments
-    for experiment in DATABASE:
-        if(experiment.flag):
-            experiment.flag = False
-    DATABASE.append(new_experiment)
-    new_experiment.flag = True
-    new_experiment.name = "GeorgsExperiment"
+    # this does not work for now:
+    # new_experiment = Experiment(experiment_name, scheduler,
+    # IMAGEPATH, Camera, EXPERIMENT_POSITIONS, INTERVAL)
+
+    # # unflag all experiments, works already
+    # for experiment in DATABASE:
+    #     if(experiment.flag):
+    #         experiment.flag = False
     # DATABASE.append(new_experiment)
-    return render_template("experiments.html", experiment_name = new_experiment.name)
+    # new_experiment.flag = True
 
-@app.route('/get_experiment_status') 
-# @app.route('/experiments')
-def experiment_status():
-    current_experiment = request.args.get('status')
-    print(current_experiment)
-    current_experiment = select_experiment()
+    # this creates the default experiment and flags it - works!
+    new_experiment = select_experiment()
+    print(new_experiment.name)
+    # new_experiment.name = "GeorgsExperiment"
 
-    return current_experiment.name
+    return f"{new_experiment.name}"
 
 
 def select_experiment():
