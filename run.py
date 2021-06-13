@@ -253,17 +253,19 @@ def show_yolo():
     experiment_name = current_experiment.name, images = yolo_image_list)
 
 @app.route('/experiments')
-def automatic():
+def experiments():
     print("experiments")
     print(DATABASE)
     experiment_name = request.args.get('experiment_name')
     print("experiment name:")
     print(experiment_name)
     # this cannto work for now !!!!!!!!!!!!!!!!!!!!!!
-    experiment_positions = request.args.get('experiment_positions')
-    interval = request.args.get('interval')
+    # experiment_positions = request.args.get('experiment_positions')
+    # interval = request.args.get('interval')
+    # new_experiment = Experiment(experiment_name, scheduler,
+    # IMAGEPATH, Camera, experiment_positions, interval)
     new_experiment = Experiment(experiment_name, scheduler,
-    IMAGEPATH, Camera, experiment_positions, interval)
+    IMAGEPATH, Camera, EXPERIMENT_POSITIONS, INTERVAL)
 
     # unflag all experiments
     for experiment in DATABASE:
@@ -271,8 +273,19 @@ def automatic():
             experiment.flag = False
     DATABASE.append(new_experiment)
     new_experiment.flag = True
+    new_experiment.name = "GeorgsExperiment"
     # DATABASE.append(new_experiment)
-    return ("nothing")
+    return render_template("experiments.html", experiment_name = new_experiment.name)
+
+@app.route('/get_experiment_status') 
+# @app.route('/experiments')
+def experiment_status():
+    current_experiment = request.args.get('status')
+    print(current_experiment)
+    current_experiment = select_experiment()
+
+    return current_experiment.name
+
 
 def select_experiment():
     print(f"Current database lenght: {len(DATABASE)}")

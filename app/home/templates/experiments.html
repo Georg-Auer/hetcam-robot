@@ -15,32 +15,49 @@
           <div class="card">
             <div class="card-header">
               <h5 class="title">
-                Blank Page
+                SPOC lab hetcam experiments
               </h5>
-              <p class="category">
-                  Simple starter page
-              </p>
+              <!-- <p class="category">
+                  Video Stream
+              </p> -->
             </div>
             <div class="card-body">
-              <div class="row">
+              <!-- <div class="row">
                 <div class="col-md-12">
-
-                  <div class="experiment-info">
-                    <div class='experiment_name'>Demo Experiment Name</div>
-                  </div>
-                  <a href=# id=toggle-switch>
-                    <button>   
-                    <!-- <style>
-                      .toggle.ios, .toggle-on.ios, .toggle-off.ios { border-radius: 1px; }
-                      .toggle.ios .toggle-handle { border-radius: 1px; }
-                    </style> -->
-                    <input type="checkbox" class='toggle' checked data-toggle="toggle" data-onstyle="success" data-style="ios">
-                    </button>
-                  </a>
-
-
+                    Add more content here      
                 </div>
+              </div> -->
+
+              <div class="automatic-info">
+                <div class='status'>Automatic On</div>
               </div>
+
+              <img src="{{ url_for('video_feed') }}">
+          
+              <div class="navbar">
+              
+                <form method = "post">
+                  <div class="experiments">
+                    <a href=# id=href_0>
+                      <button>                   
+                        <i class="fa fa-arrow-down fa" style="color: rgb(0, 87, 63);" aria-hidden="true"></i>
+                      </button>
+                    </a>
+
+                    <!-- this makes round toggle buttons -->
+                    <a href=# id=toggle-switch>
+                      <button>   
+                      <input type="checkbox" class='toggle' checked data-toggle="toggle" data-onstyle="success" data-style="ios">
+                      </button>
+                    </a>
+                    
+                  </div>
+          
+                </form>
+              
+              </div>
+
+              <!-- end of new content -->
             </div>
           </div>
         </div>
@@ -49,17 +66,111 @@
 
 {% endblock content %}
 
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">  
+
+<!-- variable for automatic -->
+
+
+  <!-- some javascript -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script type=text/javascript>
+  // $(function() {
+    
+  //   //json - parse to Python
+  //   // Motor - 90°
+  //   $('a#href_0').bind('click', function() {
+  //     $.getJSON('/move_deg?degree=0',
+  //         function(data) {
+  //       //do nothing
+  //     });
+  //     return false;
+  //   });
+    
+  //   // - Motor - 90°
+  //   $('a#href_90').bind('click', function() {
+  //     $.getJSON('/move_deg?degree=90',
+  //         function(data) {
+  //       //do nothing
+  //     });
+  //     return false;
+  //   });
+
+  //   // - Motor - 180°
+  //   $('a#href_180').bind('click', function() {
+  //     $.getJSON('/move_deg?degree=180',
+  //         function(data) {
+  //       //do nothing
+  //     });
+  //     return false;
+  //   });
+
+  //   // - Motor - 270°
+  //   $('a#href_270').bind('click', function() {
+  //     $.getJSON('/move_deg?degree=270',
+  //         function(data) {
+  //       //do nothing
+  //     });
+  //     return false;
+  //   });
+
+  //   // - Gallery
+  //   $('a#href_gallery').bind('click', function() {
+  //     $.getJSON('/gallery',
+  //         function(data) {
+  //       //do nothing
+  //     });
+  //     return false;
+  //   });
+
+  //   // - picture
+  //   $('a#picture').bind('click', function() {
+  //     $.getJSON('/picture',
+  //         function(data) {
+  //       //do nothing
+  //     });
+  //     return false;
+  //   });
+    
+
+  // });    
+  </script>
+
+<script type="text/javascript">
+  
+var button = document.getElementById('button');
+
+button.onclick = function() {
+    var div = document.getElementById('newpost');
+    if (div.style.display !== 'none') {
+        div.style.display = 'none';
+    }
+    else {
+        div.style.display = 'block';
+    }
+};
+</script>
+
+
+<!-- toggle switch script -->
+<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script> -->
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+<!-- <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script> -->
+<link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
+<script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
 
 <script>
   $(document).ready(function() {
     $('.toggle').click(function() {
-    var current_experiment_name = $('.experiment_name').text();
+    var current_experiment = $('.status').text();
     $.ajax({
-      url: "/get_experiment_name",
+      url: "/get_experiment_status",
       type: "get",
-      data: {status: current_experiment_name},
+      data: {status: current_experiment},
       success: function(response) {
-        $(".experiment_name").html(response);
+        $(".status").html(response);
       },
       error: function(xhr) {
         //Do Something to handle error
@@ -68,5 +179,5 @@
     });
   });
 </script>
-<!-- Specific Page JS goes HERE  -->
-{% block javascripts %}{% endblock javascripts %}
+
+{% endblock javascripts %}
