@@ -252,26 +252,57 @@ def show_yolo():
     return render_template("gallery.html", image_foldername = foldername_gallery,
     experiment_name = current_experiment.name, images = yolo_image_list)
 
-@app.route('/experiments')
+# @app.route('/experiments')
+# def experiments():
+#     print("experiments")
+#     print(DATABASE)
+#     current_experiment = select_experiment()
+#     print(current_experiment.name)
+#     # DATABASE.append(new_experiment)
+#     return render_template("experiments.html", experiment_name = current_experiment.name)
+
+# flask form for experiment selection
+# https://python-adv-web-apps.readthedocs.io/en/latest/flask_forms.html
+from flask_bootstrap import Bootstrap
+from flask_wtf import FlaskForm
+from wtforms import StringField, SubmitField
+from wtforms.validators import DataRequired
+
+# Flask-WTF requires an encryption key - the string can be anything
+app.config['SECRET_KEY'] = 'C2HWGVoMGfNTBsrYQg8EcMrdTimkZfAb'
+
+# Flask-Bootstrap requires this line
+Bootstrap(app)
+class ExperimentForm(FlaskForm):
+    name = StringField('Which actor is your favorite?', validators=[DataRequired()])
+    submit = SubmitField('Submit')
+
+@app.route('/experiments', methods=['GET', 'POST'])
 def experiments():
-    print("experiments")
-    print(DATABASE)
-    current_experiment = select_experiment()
-    print(current_experiment.name)
-    # DATABASE.append(new_experiment)
-    return render_template("experiments.html", experiment_name = current_experiment.name)
+    # names = get_names(ACTORS)
+    names = ["test"]
+    # you must tell the variable 'form' what you named the class, above
+    # 'form' is the variable name used in this template: index.html
+    form = ExperimentForm()
+    message = ""
+    if form.validate_on_submit():
+        name = form.name.data
+        if name.lower() in names:
+            # empty the form field
+            form.name.data = ""
+            # id = get_id(ACTORS, name)
+            # redirect the browser to another route and template
+            # return redirect( url_for('actor', id=id) )
+            return
+        else:
+            message = "That experiment is not in our database."
+    return render_template('experiments.html', names=names, form=form, message=message)
 
 @app.route('/get_experiment_status') 
 # @app.route('/experiments')
 def experiment_status():
-    # current_experiment = request.args.get('status')
-    # print(current_experiment)
-    # current_experiment = select_experiment()
-
-    # this is sadly not working, needs to work first!
-    experiment_name = request.args.get('experiment_name')
-    print("experiment name:")
-    print(experiment_name)
+    experiment_name = request.args.get('status')
+    print(f"Experiment name: {experiment_name}")
 
     # this cannto work for now !!!!!!!!!!!!!!!!!!!!!!
     # experiment_positions = request.args.get('experiment_positions')
@@ -279,20 +310,20 @@ def experiment_status():
     # new_experiment = Experiment(experiment_name, scheduler,
     # IMAGEPATH, Camera, experiment_positions, interval)
 
-    # this does not work for now:
-    # new_experiment = Experiment(experiment_name, scheduler,
-    # IMAGEPATH, Camera, EXPERIMENT_POSITIONS, INTERVAL)
+    # create new experiment with custom name, positions, interval,...
+    new_experiment = Experiment(experiment_name, scheduler,
+    IMAGEPATH, Camera, EXPERIMENT_POSITIONS, INTERVAL)
 
-    # # unflag all experiments, works already
-    # for experiment in DATABASE:
-    #     if(experiment.flag):
-    #         experiment.flag = False
-    # DATABASE.append(new_experiment)
-    # new_experiment.flag = True
+    # unflag all experiments, works already
+    for experiment in DATABASE:
+        if(experiment.flag):
+            experiment.flag = False
+    DATABASE.append(new_experiment)
+    new_experiment.flag = True
 
     # this creates the default experiment and flags it - works!
-    new_experiment = select_experiment()
-    print(new_experiment.name)
+    # new_experiment = select_experiment()
+    # print(new_experiment.name)
     # new_experiment.name = "GeorgsExperiment"
 
     return f"{new_experiment.name}"
