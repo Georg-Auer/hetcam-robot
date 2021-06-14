@@ -252,17 +252,9 @@ def show_yolo():
     return render_template("gallery.html", image_foldername = foldername_gallery,
     experiment_name = current_experiment.name, images = yolo_image_list)
 
-# @app.route('/experiments')
-# def experiments():
-#     print("experiments")
-#     print(DATABASE)
-#     current_experiment = select_experiment()
-#     print(current_experiment.name)
-#     # DATABASE.append(new_experiment)
-#     return render_template("experiments.html", experiment_name = current_experiment.name)
-
 # flask form for experiment selection
 # https://python-adv-web-apps.readthedocs.io/en/latest/flask_forms.html
+# https://www.codecademy.com/learn/learn-flask/modules/flask-templates-and-forms/cheatsheet
 from flask_bootstrap import Bootstrap
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField
@@ -274,13 +266,16 @@ app.config['SECRET_KEY'] = 'C2HWGVoMGfNTBsrYQg8EcMrdTimkZfAb'
 # Flask-Bootstrap requires this line
 Bootstrap(app)
 class ExperimentForm(FlaskForm):
-    name = StringField('Which actor is your favorite?', validators=[DataRequired()])
-    submit = SubmitField('Submit')
+    name = StringField('What should be the new experiment name?', validators=[DataRequired()])
+    submit = SubmitField('Create')
 
 @app.route('/experiments', methods=['GET', 'POST'])
 def experiments():
     # names = get_names(ACTORS)
-    names = ["test"]
+    names = []
+    for experiment in DATABASE:
+        names.append(experiment.name)
+    print(names)
     # you must tell the variable 'form' what you named the class, above
     # 'form' is the variable name used in this template: index.html
     form = ExperimentForm()
@@ -293,9 +288,24 @@ def experiments():
             # id = get_id(ACTORS, name)
             # redirect the browser to another route and template
             # return redirect( url_for('actor', id=id) )
-            return
+            message = "The experiment name is already taken."
         else:
-            message = "That experiment is not in our database."
+            print(DATABASE)
+            for experiment in DATABASE:
+                if(experiment.flag):
+                    experiment.flag = False
+                    print(f"Experiment {experiment.name} unflagged")
+
+            print(name.lower())
+            experiment_name = name.lower() # experiments are forced into lowercase
+            new_experiment = Experiment(experiment_name, scheduler,
+                IMAGEPATH, Camera, EXPERIMENT_POSITIONS, INTERVAL)
+        
+            new_experiment.flag = True
+            DATABASE.append(new_experiment)
+            message = "The experiment was created."
+
+
     return render_template('experiments.html', names=names, form=form, message=message)
 
 @app.route('/get_experiment_status') 

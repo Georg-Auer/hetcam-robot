@@ -2,7 +2,8 @@
 {% extends "layouts/base.html" %}
 
 {% import "bootstrap/wtf.html" as wtf %}
-
+<!-- https://python-adv-web-apps.readthedocs.io/en/latest/flask_forms.html -->
+<!-- https://stackoverflow.com/questions/1976651/multiple-level-template-inheritance-in-jinja2 -->
 {% block styles %}
 {{ super() }}
 	<style>
@@ -22,9 +23,9 @@ Best Movie Actors
   <div class="row">
     <div class="col-md-10 col-lg-8 mx-lg-auto mx-md-auto">
 
-      <h1 class="pt-5 pb-2">Welcome to the best movie actors Flask example!</h1>
+      <h1 class="pt-5 pb-2">Please create a new experiment!</h1>
 
-      <p class="lead">This is the index page for an example Flask app using Bootstrap and WTForms. Note that only 100 actors are in the data source. Partial names are not valid.</p>
+      <p class="lead">Create a new experiment by entering a name and click on Create</p>
 
       {{ wtf.quick_form(form) }}
 
