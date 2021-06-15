@@ -16,7 +16,7 @@ from app import create_app, db
 
 from importlib import import_module
 import os
-from flask import Flask, render_template, Response
+from flask import Flask, render_template, url_for, Response
 
 # import camera driver
 if os.environ.get('CAMERA'):
@@ -89,11 +89,12 @@ scheduler.init_app(app)
 scheduler.start()
 
 INTERVAL = 1 # experiment time in minutes
-EXPERIMENT_NAME = "default_experiment"
+EXPERIMENT_NAME = "default"
 EXPERIMENT_POSITIONS = [0, 90, 180, 270]
 DATABASE = []
 
 @app.route('/')
+@app.route('/index')
 def index():
     # images = os.listdir('./images')
     # print("List of found images in folder /images")
@@ -138,7 +139,7 @@ def move_deg():
     if(degree <= -90):
         degree = -90
     print(f"Moving to {degree}°")
-    current_experiment = select_experiment()
+    current_experiment = select_flagged_experiment()
     print(current_experiment.name)
     current_experiment.planned_position = degree
     current_experiment.motor_position()
@@ -161,7 +162,7 @@ def toggled_status():
 
     # create dummy experiment for now
     # new_experiment = Experiment(EXPERIMENT_NAME, scheduler, IMAGEPATH, Camera, [0, 90, 180, 270], INTERVAL)
-    current_experiment = select_experiment()
+    current_experiment = select_flagged_experiment()
     # if Automatic On was sent and no jobs are scheduled
     if(current_status == 'Automatic Off') and not(scheduler.get_jobs()):
         print("Switching On")
@@ -188,7 +189,7 @@ def toggled_status():
 
 @app.route('/picture')
 def picture():
-    current_experiment = select_experiment()
+    current_experiment = select_flagged_experiment()
     current_experiment.picture_task()
     print(f"Picture saved in Experiment: {current_experiment.name}")
     print(f"There are {len(current_experiment.saved_positions)} saved positions")
@@ -203,7 +204,7 @@ def picture():
 
 @app.route("/gallery")
 def show_gallery():
-    current_experiment = select_experiment()
+    current_experiment = select_flagged_experiment()
     print(current_experiment.name)
     raw_image_foldername = f'{current_experiment.image_path}/{current_experiment.name}/{current_experiment.raw_dir}/'
     raw_image_list = os.listdir(raw_image_foldername)
@@ -214,7 +215,7 @@ def show_gallery():
 
 @app.route("/gallery-skeleton")
 def show_gallery_skeleton():
-    current_experiment = select_experiment()
+    current_experiment = select_flagged_experiment()
     print(current_experiment.name)
 
     # this should be done via button or algorithm
@@ -234,7 +235,7 @@ def show_gallery_skeleton():
 
 @app.route("/gallery-yolo")
 def show_yolo():
-    current_experiment = select_experiment()
+    current_experiment = select_flagged_experiment()
     print(current_experiment.name)
 
     # this should be done via button or algorithm
@@ -306,7 +307,6 @@ def experiments():
             DATABASE.append(new_experiment)
             message = "The experiment was created."
 
-
     return render_template('experiments.html', names=names, form=form, message=message)
 
 @app.route('/get_experiment_status') 
@@ -333,14 +333,29 @@ def experiment_status():
     new_experiment.flag = True
 
     # this creates the default experiment and flags it - works!
-    # new_experiment = select_experiment()
+    # new_experiment = select_flagged_experiment()
     # print(new_experiment.name)
     # new_experiment.name = "GeorgsExperiment"
 
     return f"{new_experiment.name}"
 
+# select experiment by name
+@app.route('/experiment/<experiment_name>')
+def profile(experiment_name):
+    experiment_name = experiment_name.lower()
+    print(f"Selected experiment: {experiment_name}")
+    # unflag all experiments for preparation
+    for experiment in DATABASE:
+        if(experiment.flag):
+            experiment.flag = False
+    # during generation of experiments, it is ensured that names are uniqe and lowercase
+    for experiment in DATABASE:
+        if(experiment.name == experiment_name):
+            experiment.flag = True
+            return redirect(url_for('index'))
+            # return experiment
 
-def select_experiment():
+def select_flagged_experiment():
     print(f"Current database lenght: {len(DATABASE)}")
     if(len(DATABASE) == 0):
         print("No experiments found, creating default experiment")

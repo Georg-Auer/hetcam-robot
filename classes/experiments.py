@@ -197,21 +197,6 @@ class Position(object):
         # self.yolo_image = 
         # this should also get bounding boxes and found classes
 
-# def take_image(self):
-#     print("taking image")
-#     # image = cv2-image(self.name, self.actualposition??)
-#     # return image
-
-# def analyze_skeleton(self):
-#     print("taking image")
-#     # image = cv2-image
-#     # return image, xy_coordinates
-
-# def analyze_yolo(self):
-#     print("taking image")
-#     # image = cv2-image
-#     # return image, object_bounding_box
-
 if __name__ == '__main__':
 
     het2 = Experiment("Nr. 1", [0, 90, 180, 270], 5)
