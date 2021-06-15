@@ -291,6 +291,7 @@ def experiments():
             message = "The experiment name is already taken."
         else:
             print(DATABASE)
+            # unflag all previous experiments
             for experiment in DATABASE:
                 if(experiment.flag):
                     experiment.flag = False
