@@ -96,9 +96,8 @@ DATABASE = []
 @app.route('/')
 @app.route('/index')
 def index():
-    # images = os.listdir('./images')
-    # print("List of found images in folder /images")
-    # print(images)
+    current_experiment = select_flagged_experiment()
+    print(current_experiment.name)
     """Video streaming home page."""
     # return render_template('index.html', images=images)
     return render_template('index.html')
@@ -163,6 +162,7 @@ def toggled_status():
     # create dummy experiment for now
     # new_experiment = Experiment(EXPERIMENT_NAME, scheduler, IMAGEPATH, Camera, [0, 90, 180, 270], INTERVAL)
     current_experiment = select_flagged_experiment()
+    print(current_experiment.name)
     # if Automatic On was sent and no jobs are scheduled
     if(current_status == 'Automatic Off') and not(scheduler.get_jobs()):
         print("Switching On")
@@ -190,6 +190,7 @@ def toggled_status():
 @app.route('/picture')
 def picture():
     current_experiment = select_flagged_experiment()
+    print(current_experiment.name)
     current_experiment.picture_task()
     print(f"Picture saved in Experiment: {current_experiment.name}")
     print(f"There are {len(current_experiment.saved_positions)} saved positions")
