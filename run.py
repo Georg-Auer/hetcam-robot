@@ -261,7 +261,7 @@ def show_yolo():
 # https://www.codecademy.com/learn/learn-flask/modules/flask-templates-and-forms/cheatsheet
 from flask_bootstrap import Bootstrap
 from flask_wtf import FlaskForm
-from wtforms import StringField, IntegerField, BooleanField, SubmitField
+from wtforms import StringField, IntegerField, widgets, SelectMultipleField, SubmitField
 from wtforms.validators import DataRequired
 
 # Flask-WTF requires an encryption key - the string can be anything
@@ -269,26 +269,59 @@ app.config['SECRET_KEY'] = 'C2HWGVoMGfNTBsrYQg8EcMrdTimkZfAb'
 
 # Flask-Bootstrap requires this line
 Bootstrap(app)
+class MultiCheckboxField(SelectMultipleField):
+    widget = widgets.ListWidget(prefix_label=False)
+    option_widget = widgets.CheckboxInput()
+# class SimpleForm(FlaskForm):
+#     string_of_files = ['one\r\ntwo\r\nthree\r\n']
+#     list_of_files = string_of_files[0].split()
+#     # create a list of value/description tuples
+#     files = [(x, x) for x in list_of_files]
+#     example = MultiCheckboxField('Label', choices=files)
+
 class ExperimentForm(FlaskForm):
-    name = StringField('What should be the new experiment name?', validators=[DataRequired()])
-    interval = IntegerField('Interval between automatic imaging in minutes', default = 30)
+    name = StringField('Experiment name: ', validators=[DataRequired()])
+    interval = IntegerField('Interval between automatic imaging in minutes: ', default = 30)
     # positions = BooleanField('Position 0', false_values=None)
+    string_of_files = ['0\r\n90\r\n180\r\n']
+    # string_of_files = ['0\r\n90\r\n180\r\n270\r\n']
+    list_of_files = string_of_files[0].split()
+    # create a list of value/description tuples
+    files = [(x, x) for x in list_of_files]
+    positions = MultiCheckboxField('Positions', choices=files)
+
     submit = SubmitField('Create')
 
 @app.route('/experiments', methods=['GET', 'POST'])
 def experiments():
-    # names = get_names(ACTORS)
     names = []
     for experiment in DATABASE:
         names.append(experiment.name)
-    print(names)
+    print(f"Current experiment name(s): {names}")
     # you must tell the variable 'form' what you named the class, above
     # 'form' is the variable name used in this template: index.html
     form = ExperimentForm()
     message = ""
     interval = INTERVAL
     interval = int(form.interval.data)
-    print(interval)
+    print(f"Interval time: {interval}")
+
+    experiment_positions = EXPERIMENT_POSITIONS
+    print(f"Standard Positions: {experiment_positions}")
+    experiment_positions = form.positions.data
+    print(f"Positions: {experiment_positions}")
+    print(type(experiment_positions))
+    try:
+        print(map(int, experiment_positions))
+        print(list(map(int, experiment_positions)))
+        experiment_positions = list(map(int, experiment_positions))
+        print(f"Positions: {experiment_positions}")
+    except:
+        print("Waiting for data")
+    # experiment_positions = list(map(int, experiment_positions))
+    # print(f"Positions: {experiment_positions}")
+    # print(form.positions.data)
+    # form.positions.coerce
     if form.validate_on_submit():
         name = form.name.data
         if name.lower() in names:
@@ -309,7 +342,7 @@ def experiments():
             print(name.lower())
             experiment_name = name.lower() # experiments are forced into lowercase
             new_experiment = Experiment(experiment_name, scheduler,
-                IMAGEPATH, Camera, EXPERIMENT_POSITIONS, interval)
+                IMAGEPATH, Camera, experiment_positions, interval)
         
             new_experiment.flag = True
             DATABASE.append(new_experiment)
