@@ -303,25 +303,7 @@ def experiments():
     form = ExperimentForm()
     message = ""
     interval = INTERVAL
-    interval = int(form.interval.data)
-    print(f"Interval time: {interval}")
-
     experiment_positions = EXPERIMENT_POSITIONS
-    print(f"Standard Positions: {experiment_positions}")
-    experiment_positions = form.positions.data
-    print(f"Positions: {experiment_positions}")
-    print(type(experiment_positions))
-    try:
-        print(map(int, experiment_positions))
-        print(list(map(int, experiment_positions)))
-        experiment_positions = list(map(int, experiment_positions))
-        print(f"Positions: {experiment_positions}")
-    except:
-        print("Waiting for data")
-    # experiment_positions = list(map(int, experiment_positions))
-    # print(f"Positions: {experiment_positions}")
-    # print(form.positions.data)
-    # form.positions.coerce
     if form.validate_on_submit():
         name = form.name.data
         if name.lower() in names:
@@ -338,15 +320,15 @@ def experiments():
                 if(experiment.flag):
                     experiment.flag = False
                     print(f"Experiment {experiment.name} unflagged")
-
-            print(name.lower())
+            interval = int(form.interval.data)
+            experiment_positions = list(map(int, form.positions.data))
             experiment_name = name.lower() # experiments are forced into lowercase
             new_experiment = Experiment(experiment_name, scheduler,
                 IMAGEPATH, Camera, experiment_positions, interval)
         
             new_experiment.flag = True
             DATABASE.append(new_experiment)
-            message = (f"The experiment {new_experiment.name} was created. Interval time set to {new_experiment.interval_minutes} minutes")
+            message = (f"The experiment {new_experiment.name} was created. Positions set to {new_experiment.experiment_positions}. Interval time set to {new_experiment.interval_minutes} minutes")
 
     return render_template('experiments.html', names=names, form=form, message=message)
 
