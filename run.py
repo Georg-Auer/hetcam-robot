@@ -283,8 +283,9 @@ class ExperimentForm(FlaskForm):
     name = StringField('Experiment name: ', validators=[DataRequired()])
     interval = IntegerField('Interval between automatic imaging in minutes: ', default = 30)
     # positions = BooleanField('Position 0', false_values=None)
-    string_of_files = ['0\r\n90\r\n180\r\n']
-    # string_of_files = ['0\r\n90\r\n180\r\n270\r\n']
+    # string_of_files = ['0\r\n90\r\n180\r\n']
+    # options:
+    string_of_files = ['0\r\n90\r\n180\r\n270\r\n']
     list_of_files = string_of_files[0].split()
     # create a list of value/description tuples
     files = [(x, x) for x in list_of_files]
