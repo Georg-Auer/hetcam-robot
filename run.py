@@ -103,6 +103,8 @@ def index():
     return render_template('index.html')
 
 def gen(camera):
+    current_experiment = select_flagged_experiment()
+    print(current_experiment.name)
     """Video streaming generator function."""
     # global global_video_frame
     # global global_video_frame_timepoint
@@ -259,7 +261,7 @@ def show_yolo():
 # https://www.codecademy.com/learn/learn-flask/modules/flask-templates-and-forms/cheatsheet
 from flask_bootstrap import Bootstrap
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField
+from wtforms import StringField, IntegerField, BooleanField, SubmitField
 from wtforms.validators import DataRequired
 
 # Flask-WTF requires an encryption key - the string can be anything
@@ -269,6 +271,8 @@ app.config['SECRET_KEY'] = 'C2HWGVoMGfNTBsrYQg8EcMrdTimkZfAb'
 Bootstrap(app)
 class ExperimentForm(FlaskForm):
     name = StringField('What should be the new experiment name?', validators=[DataRequired()])
+    interval = IntegerField('Interval between automatic imaging in minutes', default = 30)
+    # positions = BooleanField('Position 0', false_values=None)
     submit = SubmitField('Create')
 
 @app.route('/experiments', methods=['GET', 'POST'])
@@ -282,6 +286,9 @@ def experiments():
     # 'form' is the variable name used in this template: index.html
     form = ExperimentForm()
     message = ""
+    interval = INTERVAL
+    interval = int(form.interval.data)
+    print(interval)
     if form.validate_on_submit():
         name = form.name.data
         if name.lower() in names:
@@ -302,11 +309,11 @@ def experiments():
             print(name.lower())
             experiment_name = name.lower() # experiments are forced into lowercase
             new_experiment = Experiment(experiment_name, scheduler,
-                IMAGEPATH, Camera, EXPERIMENT_POSITIONS, INTERVAL)
+                IMAGEPATH, Camera, EXPERIMENT_POSITIONS, interval)
         
             new_experiment.flag = True
             DATABASE.append(new_experiment)
-            message = "The experiment was created."
+            message = (f"The experiment {new_experiment.name} was created. Interval time set to {new_experiment.interval_minutes} minutes")
 
     return render_template('experiments.html', names=names, form=form, message=message)
 

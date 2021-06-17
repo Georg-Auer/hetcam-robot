@@ -21,22 +21,19 @@
               <h5 class="title">
                 Experiments
               </h5>
-              <p class="category">
-                  create and modify experiments
+              <p class="lead">Load an experiment by click:</p>
+              {% for name in names %}
+              <a class="dropdown-item" href="/experiment/{{name}}">Experiment: {{name}}</a>
+              {% endfor %}
               </p>
             </div>
             <div class="card-body">
               <div class="row">
                 <div class="col-md-12">
-
-                  <h1 class="pt-5 pb-2">Please create a new experiment!</h1>
-
-                  <p class="lead">Create a new experiment by entering a name and click on Create</p>
-            
+                  <!-- <h1 class="pt-5 pb-2">Please create a new experiment!</h1> -->
+                  <p class="lead">Create a new experiment by inserting a name and click on Create</p>
                   {{ wtf.quick_form(form) }}
-            
                   <p class="pt-5"><strong>{{ message }}</strong></p> 
-                  
                 </div>
               </div>
             </div>
