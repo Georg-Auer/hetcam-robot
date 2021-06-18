@@ -21,7 +21,9 @@ class Experiment(object):
         self.image_path = image_path
         self.Camera = Camera
         # self.resolution = [1280, 720]
-        self.resolution = [4056, 3040]
+        # self.resolution = [4056, 3040]
+        self.resolution = [2592, 1944]
+        # self.resolution = [3280, 2464]
         self.experiment_running = False
         self.flag = False
         self.motor_comport = '/dev/ttyACM0'
