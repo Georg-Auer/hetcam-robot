@@ -20,7 +20,8 @@ class Experiment(object):
         self.scheduler = scheduler
         self.image_path = image_path
         self.Camera = Camera
-        self.resolution = [1280, 720]
+        # self.resolution = [1280, 720]
+        self.resolution = [4056, 3040]
         self.experiment_running = False
         self.flag = False
         self.motor_comport = '/dev/ttyACM0'
