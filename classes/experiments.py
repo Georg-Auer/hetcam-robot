@@ -66,8 +66,11 @@ class Experiment(object):
     def start_experiment(self):
         print("Starting experiment")
         self.experiment_running = True
-        print(f"Resolution set to {self.resolution} for automated pictures")
-        self.Camera().set_resolution(self.resolution)
+        try:
+            self.Camera().set_resolution(self.resolution)
+            print(f"Resolution set to {self.resolution} for automated pictures")
+        except:
+            print("Resolution could not be set for experiment")
         # for element in self.experiment_positions:
         #     self.saved_positions.append(Position(self.name, self.experiment_positions))
         schedule_start = datetime.today()

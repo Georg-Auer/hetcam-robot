@@ -66,8 +66,8 @@ class BaseCamera(object):
             # start background frame thread
             resolution_arg = [BaseCamera.resolution]
             print(f"No threads, starting Camera thread with resolution: {resolution_arg}")
-            BaseCamera.thread = threading.Thread(target=self._thread, args=resolution_arg)
-            # BaseCamera.thread = threading.Thread(target=self._thread)
+            # BaseCamera.thread = threading.Thread(target=self._thread, args=resolution_arg)
+            BaseCamera.thread = threading.Thread(target=self._thread)
             BaseCamera.thread.start()
 
             # wait until frames are available
@@ -92,16 +92,14 @@ class BaseCamera(object):
     @staticmethod
     def set_resolution(new_resolution):
         print(f"old resolution: {BaseCamera.resolution}")
-        print(f"new resolution: {new_resolution}")
+        print(f"resolution to be set: {new_resolution}")
         BaseCamera.resolution = new_resolution
         print(f"new resolution: {BaseCamera.resolution}")
 
     # resolution = [1280, 720]
     @classmethod
-    def _thread(cls, resolution):
+    def _thread(cls):
         """Camera background thread."""
-        print(f'Starting camera thread with resolution {resolution}.')
-        print("redundant? should be the same value!")
         print(f'Starting camera thread with resolution {BaseCamera.resolution}.')
         try:
             frames_iterator = cls.frames(BaseCamera.resolution)
