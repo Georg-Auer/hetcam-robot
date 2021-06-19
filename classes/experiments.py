@@ -148,10 +148,16 @@ class Experiment(object):
         print("Raspberry Camera loaded")
         camera.resolution = (self.x_resolution, self.y_resolution)
         camera.framerate = 32
-        camera.exposure_mode = 'sports'
+        # camera.exposure_mode = 'sports'
         # if the iso is set, pictures will look more similar
-        camera.iso = 400
-        camera.shutter_speed = 10
+        camera.iso = 100
+        camera.shutter_speed = 1000
+
+        camera.brightness = 50 #(0 to 100)
+        camera.sharpness = 0 #(-100 to 100)
+        camera.contrast = 0 #(-100 to 100)
+        camera.saturation = 0 #(-100 to 100
+
         #camera.vflip = True
         # alternative rawCapture = PiRGBArray(camera)
         rawCapture = PiRGBArray(camera, size=(self.x_resolution, self.y_resolution))
