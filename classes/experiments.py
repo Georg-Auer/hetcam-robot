@@ -24,9 +24,9 @@ class Experiment(object):
         self.image_path = image_path
         # self.Camera = Camera
         # self.resolution = [1280, 720]
-        self.resolution = [4056, 3040]
+        # self.resolution = [4056, 3040]
         # self.resolution = [2592, 1952]
-        # self.resolution = [3280, 2464]
+        self.resolution = [3280, 2464]
         self.x_resolution, self.y_resolution = self.resolution
         self.experiment_running = False
         self.flag = False
