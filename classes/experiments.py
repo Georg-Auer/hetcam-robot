@@ -182,7 +182,7 @@ class Experiment(object):
         # create new position with image
         self.saved_positions.append(Position(self.name, self.current_position,
         self.exp_foldername, self.raw_dir, self.skeleton_dir,
-        self.yolo_dir, filename, RGB_img))
+        self.yolo_dir, filename, image))
 
     def create_directories(self):
         for variant in self.img_variant_folders:
