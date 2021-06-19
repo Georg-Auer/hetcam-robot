@@ -1,6 +1,6 @@
 # -*- encoding: utf-8 -*-
 """
-Copyright (c) 2019 - present AppSeed.us
+start with: sudo CAMERA=opencv python3 run.py
 """
 
 from flask_migrate import Migrate
