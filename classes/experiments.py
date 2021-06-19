@@ -26,7 +26,7 @@ class Experiment(object):
         # self.resolution = [1280, 720]
         # self.resolution = [4056, 3040]
         # self.resolution = [2592, 1952]
-        self.resolution = [3280, 2464]
+        self.resolution = [3296, 2464]
         self.x_resolution, self.y_resolution = self.resolution
         self.experiment_running = False
         self.flag = False
@@ -146,23 +146,23 @@ class Experiment(object):
             #rawCapture.close()
 
         print("Raspberry Camera loaded")
-        camera.resolution = (self.x_resolution, self.y_resolution)
-        camera.framerate = 32
+        # camera.resolution = (self.x_resolution, self.y_resolution)
+        # camera.framerate = 32
         # camera.exposure_mode = 'sports'
         # if the iso is set, pictures will look more similar
-        camera.iso = 400
-        camera.shutter_speed = 1000
+        # camera.iso = 400
+        # camera.shutter_speed = 1000
 
-        camera.brightness = 50 #(0 to 100)
-        camera.sharpness = 0 #(-100 to 100)
-        camera.contrast = 0 #(-100 to 100)
-        camera.saturation = 0 #(-100 to 100
+        # camera.brightness = 50 #(0 to 100)
+        # camera.sharpness = 0 #(-100 to 100)
+        # camera.contrast = 0 #(-100 to 100)
+        # camera.saturation = 0 #(-100 to 100
 
         #camera.vflip = True
         # alternative rawCapture = PiRGBArray(camera)
         rawCapture = PiRGBArray(camera, size=(self.x_resolution, self.y_resolution))
         # allow the camera to warmup
-        time.sleep(0.1)
+        time.sleep(0.5)
         camera.capture(rawCapture, format="rgb")
         RGB_img = rawCapture.array
         camera.close()
