@@ -163,12 +163,12 @@ class Experiment(object):
         # rawCapture = PiRGBArray(camera, size=(self.x_resolution, self.y_resolution))
         # allow the camera to warmup
 
-        camera.resolution = (320, 240)
+        camera.resolution = (self.x_resolution, self.y_resolution)
         camera.framerate = 24
         time.sleep(2)
-        image = np.empty((240 * 320 * 3,), dtype=np.uint8)
+        image = np.empty((self.y_resolution * self.x_resolution * 3,), dtype=np.uint8)
         camera.capture(image, 'bgr')
-        image = image.reshape((240, 320, 3))
+        image = image.reshape((self.y_resolution, self.x_resolution, 3))
         # camera.capture(rawCapture, format="rgb")
         # RGB_img = rawCapture.array
         camera.close()
