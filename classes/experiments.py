@@ -22,9 +22,9 @@ class Experiment(object):
         self.saved_positions = []
         self.scheduler = scheduler
         self.image_path = image_path
-        self.Camera = Camera
-        # self.resolution = [1280, 720]
-        self.resolution = [4056, 3040]
+        # self.Camera = Camera
+        self.resolution = [1280, 720]
+        # self.resolution = [4056, 3040]
         # self.resolution = [2592, 1944]
         # self.resolution = [3280, 2464]
         self.x_resolution, self.y_resolution = self.resolution
@@ -70,11 +70,12 @@ class Experiment(object):
     def start_experiment(self):
         print("Starting experiment")
         self.experiment_running = True
-        try:
-            self.Camera().set_resolution(self.resolution)
-            print(f"Resolution set to {self.resolution} for automated pictures")
-        except:
-            print("Resolution could not be set for experiment")
+        # try:
+        #     self.Camera().set_resolution(self.resolution)
+        #     print(f"Resolution set to {self.resolution} for automated pictures")
+        # except:
+        #     print("Resolution could not be set for experiment")
+
         # for element in self.experiment_positions:
         #     self.saved_positions.append(Position(self.name, self.experiment_positions))
         schedule_start = datetime.today()
@@ -100,8 +101,8 @@ class Experiment(object):
         self.scheduler.remove_all_jobs()
         print(self.scheduler.get_jobs())
         print("Setting lower resolution for webstream")
-        new_resolution = [640, 480]
-        self.Camera().set_resolution(new_resolution)
+        # new_resolution = [640, 480]
+        # self.Camera().set_resolution(new_resolution)
         self.experiment_running = False
 
     def motor_task_creator(self, task_id):
