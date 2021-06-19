@@ -100,7 +100,7 @@ class Experiment(object):
         # self.scheduler.remove_job(j0)
         self.scheduler.remove_all_jobs()
         print(self.scheduler.get_jobs())
-        print("Setting lower resolution for webstream")
+        # print("Setting lower resolution for webstream")
         # new_resolution = [640, 480]
         # self.Camera().set_resolution(new_resolution)
         self.experiment_running = False
@@ -123,6 +123,9 @@ class Experiment(object):
         video_frame_timepoint = (datetime.now().strftime("%Y%m%d-%H%M%S"))
         filename = f'position{self.current_position}_{video_frame_timepoint}.jpg'
         file_in_foldername = f'{self.image_path}/{self.name}/{self.raw_dir}/{filename}'
+        # https://picamera.readthedocs.io/en/release-1.13/recipes1.html
+        # https://picamera.readthedocs.io/en/release-1.13/recipes2.html
+        # https://picamera.readthedocs.io/en/release-1.13/fov.html#sensor-modes
         # gif_bytes_io = BytesIO()
         # gif_bytes_io.write(frame)
         # image = Image.open(gif_bytes_io)
