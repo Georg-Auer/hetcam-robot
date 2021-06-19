@@ -24,9 +24,10 @@ class Experiment(object):
         self.image_path = image_path
         self.Camera = Camera
         # self.resolution = [1280, 720]
-        # self.resolution = [4056, 3040]
-        self.resolution = [2592, 1944]
+        self.resolution = [4056, 3040]
+        # self.resolution = [2592, 1944]
         # self.resolution = [3280, 2464]
+        self.x_resolution, self.y_resolution = self.resolution
         self.experiment_running = False
         self.flag = False
         self.motor_comport = '/dev/ttyACM0'
@@ -144,21 +145,15 @@ class Experiment(object):
             #rawCapture.close()
 
         print("Raspberry Camera loaded")
-        # following camera settings are not needed
-        #x_res = 640
-        #y_res = 480
-        x_res = 320
-        y_res = 240
-        #x_res = y_res = 64
-        camera.resolution = (x_res, y_res)
+        camera.resolution = (self.x_resolution, self.y_resolution)
         camera.framerate = 32
         camera.exposure_mode = 'sports'
         # if the iso is set, pictures will look more similar
-        camera.iso = 100
-        camera.shutter_speed = 1
+        camera.iso = 400
+        camera.shutter_speed = 10
         #camera.vflip = True
         # alternative rawCapture = PiRGBArray(camera)
-        rawCapture = PiRGBArray(camera, size=(x_res, y_res))
+        rawCapture = PiRGBArray(camera, size=(self.x_resolution, self.y_resolution))
         # allow the camera to warmup
         time.sleep(0.1)
         camera.capture(rawCapture, format="rgb")
