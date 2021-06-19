@@ -94,17 +94,20 @@ class BaseCamera(object):
         print(f"old resolution: {BaseCamera.resolution}")
         print(f"new resolution: {new_resolution}")
         BaseCamera.resolution = new_resolution
+        print(f"new resolution: {BaseCamera.resolution}")
 
     # resolution = [1280, 720]
     @classmethod
     def _thread(cls, resolution):
         """Camera background thread."""
         print(f'Starting camera thread with resolution {resolution}.')
+        print("redundant? should be the same value!")
         print(f'Starting camera thread with resolution {BaseCamera.resolution}.')
         try:
             frames_iterator = cls.frames(BaseCamera.resolution)
             # this should work on "sudo CAMERA=opencv python3 run.py"
         except:
+            print("could not set resolution")
             frames_iterator = cls.frames()
             # this is only needed for the 1,2,3 image demo camera
 
