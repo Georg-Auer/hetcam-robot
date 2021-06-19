@@ -10,7 +10,7 @@ import numpy as np
 import time
 import datetime
 # import os
-# if foler manangment is needed, use: "from pathlib import Path"
+# if folder manangment is needed, use: "from pathlib import Path"
 
 # It is advised to set a working directory, like this:
 #os.chdir(r'C:\SPOC\DOC\Calibration\images')

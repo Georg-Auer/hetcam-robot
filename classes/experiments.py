@@ -7,6 +7,9 @@ import os
 from classes.pyserial_connection_arduino import connect_to_arduino, list_available_ports
 from classes.bifurcation_detection import prepare_and_analyze
 from detect import detect
+
+from classes.scientific_camera import take_raspicampic
+
 class Experiment(object):
     def __init__(self, name, scheduler, image_path,
     Camera, experiment_positions = [], interval_minutes = 5):
@@ -113,15 +116,55 @@ class Experiment(object):
 
     def picture_task(self):
         print(f"task: start to take picture {self.current_position}")
-        frame = self.Camera().get_frame()
+        # use webcam?
+        # frame = self.Camera().get_frame()
         video_frame_timepoint = (datetime.now().strftime("%Y%m%d-%H%M%S"))
         filename = f'position{self.current_position}_{video_frame_timepoint}.jpg'
         file_in_foldername = f'{self.image_path}/{self.name}/{self.raw_dir}/{filename}'
-        gif_bytes_io = BytesIO()
-        gif_bytes_io.write(frame)
-        image = Image.open(gif_bytes_io)
-        open_cv_image = np.array(image)
-        RGB_img = cv2.cvtColor(open_cv_image, cv2.COLOR_BGR2RGB)
+        # gif_bytes_io = BytesIO()
+        # gif_bytes_io.write(frame)
+        # image = Image.open(gif_bytes_io)
+        # open_cv_image = np.array(image)
+        # RGB_img = cv2.cvtColor(open_cv_image, cv2.COLOR_BGR2RGB)
+
+        try:
+            camera.close()
+            print("camera closed")
+        except:
+            print("camera was not open")
+
+        try:
+            from picamera import PiCamera
+            from picamera.array import PiRGBArray
+            import time
+            camera = PiCamera()
+        except:
+            print("camera was not closed last time or is still in use")
+            #camera.close()
+            #rawCapture.close()
+
+        print("Raspberry Camera loaded")
+        # following camera settings are not needed
+        #x_res = 640
+        #y_res = 480
+        x_res = 320
+        y_res = 240
+        #x_res = y_res = 64
+        camera.resolution = (x_res, y_res)
+        camera.framerate = 32
+        camera.exposure_mode = 'sports'
+        # if the iso is set, pictures will look more similar
+        camera.iso = 100
+        camera.shutter_speed = 1
+        #camera.vflip = True
+        # alternative rawCapture = PiRGBArray(camera)
+        rawCapture = PiRGBArray(camera, size=(x_res, y_res))
+        # allow the camera to warmup
+        time.sleep(0.1)
+        camera.capture(rawCapture, format="rgb")
+        RGB_img = rawCapture.array
+        camera.close()
+        rawCapture.close() #is this even possible?
         # for testing only
         # cv2.imshow('image',RGB_img)
         # cv2.waitKey(0)
