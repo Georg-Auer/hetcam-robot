@@ -23,10 +23,10 @@ class Experiment(object):
         self.scheduler = scheduler
         self.image_path = image_path
         # self.Camera = Camera
-        # self.resolution = [1280, 720]
+        self.resolution = [1280, 720]
         # self.resolution = [4056, 3040]
         # self.resolution = [2592, 1952]
-        self.resolution = [3296, 2464]
+        # self.resolution = [3296, 2464]
         self.x_resolution, self.y_resolution = self.resolution
         self.experiment_running = False
         self.flag = False
@@ -160,17 +160,23 @@ class Experiment(object):
 
         #camera.vflip = True
         # alternative rawCapture = PiRGBArray(camera)
-        rawCapture = PiRGBArray(camera, size=(self.x_resolution, self.y_resolution))
+        # rawCapture = PiRGBArray(camera, size=(self.x_resolution, self.y_resolution))
         # allow the camera to warmup
-        time.sleep(0.5)
-        camera.capture(rawCapture, format="rgb")
-        RGB_img = rawCapture.array
+
+        camera.resolution = (320, 240)
+        camera.framerate = 24
+        time.sleep(2)
+        image = np.empty((240 * 320 * 3,), dtype=np.uint8)
+        camera.capture(image, 'bgr')
+        image = image.reshape((240, 320, 3))
+        # camera.capture(rawCapture, format="rgb")
+        # RGB_img = rawCapture.array
         camera.close()
-        rawCapture.close() #is this even possible?
+        # rawCapture.close() #is this even possible?
         # for testing only
         # cv2.imshow('image',RGB_img)
         # cv2.waitKey(0)
-        cv2.imwrite(file_in_foldername, RGB_img)
+        cv2.imwrite(file_in_foldername, image)
         print(f"image written {file_in_foldername}")
         # self.Camera().set_resolution(new_resolution)
         # create new position with image
