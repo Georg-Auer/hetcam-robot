@@ -68,6 +68,9 @@ except KeyError:
 app = create_app( app_config ) 
 Migrate(app, db)
 
+# https://stackoverflow.com/questions/5208252/ziplist1-list2-in-jinja2
+app.jinja_env.filters['zip'] = zip
+
 if DEBUG:
     app.logger.info('DEBUG       = ' + str(DEBUG)      )
     app.logger.info('Environment = ' + get_config_mode )
@@ -296,8 +299,12 @@ class ExperimentForm(FlaskForm):
 @app.route('/experiments', methods=['GET', 'POST'])
 def experiments():
     names = []
+    positions = []
+    intervals = []
     for experiment in DATABASE:
         names.append(experiment.name)
+        positions.append(experiment.experiment_positions)
+        intervals.append(experiment.interval_minutes)
     print(f"Current experiment name(s): {names}")
     # you must tell the variable 'form' what you named the class, above
     # 'form' is the variable name used in this template: index.html
@@ -331,7 +338,7 @@ def experiments():
             DATABASE.append(new_experiment)
             message = (f"The experiment {new_experiment.name} was created. Positions set to {new_experiment.experiment_positions}. Interval time set to {new_experiment.interval_minutes} minutes")
 
-    return render_template('experiments.html', names=names, form=form, message=message)
+    return render_template('experiments.html', names=names, positions=positions, intervals=intervals, form=form, message=message)
 
 @app.route('/get_experiment_status') 
 # @app.route('/experiments')

@@ -22,9 +22,9 @@
                 Experiments
               </h5>
               <p class="lead">Load an experiment by click:</p>
-              {% for name in names %}
-              <a class="dropdown-item" href="/experiment/{{name}}">Experiment: {{name}}</a>
-              {% endfor %}
+                {% for name, position_list, interval in names|zip(positions, intervals) %}
+                  <a class="dropdown-item" href="/experiment/{{name}}">Experiment: {{name}}with positions: {{position_list}} and an interval of {{interval}} minutes</a>
+                {% endfor %}
               </p>
             </div>
             <div class="card-body">
