@@ -114,7 +114,9 @@ def take_ids_cam_pic(i):
     # cv2.imwrite(filename, gray)
 
     return filename
-
+# send image direct to flask-html?
+# https://stackoverflow.com/questions/56946969/how-to-send-an-image-directly-from-flask-server-to-html
+# mmal doc
 # https://raspberrypi.stackexchange.com/questions/87639/picamera-capture-to-array-is-slow
 # https://picamera.readthedocs.io/en/release-1.13/api_mmalobj.html
 if __name__ == '__main__':
