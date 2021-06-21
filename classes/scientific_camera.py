@@ -115,23 +115,23 @@ def take_ids_cam_pic(i):
 
     return filename
 
+# https://raspberrypi.stackexchange.com/questions/87639/picamera-capture-to-array-is-slow
+# https://picamera.readthedocs.io/en/release-1.13/api_mmalobj.html
 if __name__ == '__main__':
-    print("This module has various camera functions for import.")
-    print("For now, picamera, webcam and PyCapture2 can be loaded.")
-    import time
-    import cv2
-    from picamera import PiCamera
-    from picamera.array import PiRGBArray
-    # os.chdir(r'C:\Users\Georg\Documents\Python Scripts\delta_bot\dustbin')
-    iterations = 10
-    try:
-        i = 0
-        while(i <= iterations):
-            print(i)
-            take_raspicampic(i)
-            i += 1
-    except:
-        take_webcampic(1)
+    from picamera import mmal, mmalobj as mo
+    from time import sleep
+    def image_callback(port, buf):
+        print(buf.data)
+        return False
+    camera = mo.MMALCamera()
+    preview = mo.MMALRenderer()
+    camera.outputs[0].framesize = (320, 160)
+    camera.outputs[0].framerate = 30
+    camera.outputs[0].format = mmal.MMAL_ENCODING_RGB24
+    camera.outputs[0].commit()
+    camera.outputs[0].enable(image_callback)
+    sleep (10)
+    camera.outputs[0].disable()
 
 else:
     print("Camera module loaded:")
