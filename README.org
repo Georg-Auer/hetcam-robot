@@ -1,0 +1,45 @@
+
+*This page describes how to create a simple het cam robot.*
+
+If not stated otherwise, the designs and documentation in this repository
+are made publicly available under a
+[[https://creativecommons.org/licenses/by/4.0/][Creative Commons Attribution 4.0 International (CC BY 4.0)]] License.
+
+#+EMAIL:  science@georgauer.com
+
+#+CAPTION: Image of the 3D-printed version of the microscope.
+[[images/3dprinted_microscope.jpg]]
+#+BEGIN_QUOTE
+Image of the 3D-printed microscope.
+#+END_QUOTE
+
+** Introduction
+
+Biocompatibility is of new untested materials is an important field.
+This robot is a proposal of an automated het-cam experiment.
+
+** TODO Mechanics - Files and Bill of Materials   
+
+*** TODO  Design files
+
+
+*** TODO Bill of Materials
+
+- PLA
+- stepper motor driver
+- stepper motor
+- arduino
+- raspberry 4
+- raspberry hq video camera
+
+**** Machines (and/or):
+- FDM 3D-printer (Prusa MK3, but any model with an similar precision would do)
+
+**** Tools:
+- Soldering iron
+- Hand tools (screwdrivers etc.)
+
+** TODO Assembly
+
+* Software for the Microscope
+** TODO Introduction 
