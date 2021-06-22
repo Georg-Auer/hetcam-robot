@@ -7,10 +7,10 @@ are made publicly available under a
 
 #+EMAIL:  science@georgauer.com
 
-#+CAPTION: Image of the 3D-printed version of the microscope.
-[[images/3dprinted_microscope.jpg]]
+#+CAPTION: Image of the 3D-printed version of robot.
+[[images/robot.jpg]]
 #+BEGIN_QUOTE
-Image of the 3D-printed microscope.
+Image of the robot.
 #+END_QUOTE
 
 ** Introduction
