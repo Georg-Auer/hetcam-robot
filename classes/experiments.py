@@ -107,9 +107,10 @@ class Experiment(object):
 
     def motor_task_creator(self, task_id):
         # creating motor task that runs every minute
-        self.planned_position = task_id
-        print(f"start of motor task creator {self.planned_position}")
-        self.scheduler.add_job(func=self.motor_position, trigger='interval', minutes=self.interval_minutes, args=[task_id], id='move'+str(task_id))
+        # self.planned_position = task_id
+        # print(f"start of motor task creator {self.planned_position}")
+        print(f"start of motor task creator {task_id}")
+        self.scheduler.add_job(func=self.motor_task, trigger='interval', minutes=self.interval_minutes, args=[task_id], id='move'+str(task_id))
         # scheduler.add_job(func=motor_task, trigger='interval', minutes=interval_minutes, args=[task_id], id='move'+str(task_id))
 
     def picture_task_creator(self, task_id):
@@ -222,6 +223,7 @@ class Experiment(object):
         self.planned_position = task_id
         self.motor_position()
 
+    # def motor_position(self, position_in_degree):
     def motor_position(self):
         position_in_degree = self.planned_position
         print(f"motor_position {position_in_degree}")
