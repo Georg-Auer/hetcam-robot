@@ -109,7 +109,8 @@ class Experiment(object):
         # creating motor task that runs every minute
         self.planned_position = task_id
         print(f"start of motor task creator {self.planned_position}")
-        self.scheduler.add_job(func=self.motor_position, trigger='interval', minutes=self.interval_minutes, id='move'+str(task_id))
+        self.scheduler.add_job(func=self.motor_position, trigger='interval', minutes=self.interval_minutes, args=[task_id], id='move'+str(task_id))
+        # scheduler.add_job(func=motor_task, trigger='interval', minutes=interval_minutes, args=[task_id], id='move'+str(task_id))
 
     def picture_task_creator(self, task_id):
         print(f"start of picture task creator {task_id}")
@@ -196,6 +197,30 @@ class Experiment(object):
                 print("Directory " , foldername ,  " Created ")
             else:    
                 print("Directory " , foldername ,  " already exists")
+    # def motor_task(task_id):
+    #     # send to motor position
+    #     print(f"task: moving to position {task_id}")
+    #     motor_position(task_id)
+
+    # def motor_position(position_in_degree):
+    #     print(f"motor_position {position_in_degree}")
+    #     # 4800 steps are 270°, 360 should never be possible since = 0°
+    #     # degrees are divided by 90 and multiplied by 1600
+    #     # only send int values to arduino!
+    #     step_position_arduino = int(position_in_degree/90*1600)
+    #     print(f"Sending: {step_position_arduino} steps")
+    #     try:
+    #         results = np.array(connect_to_arduino(comport,motor0_enable,motor0_direction,step_position_arduino,
+    #             motor1_enable,motor1_direction,motor1_position,motor2_enable,motor2_direction,motor2_position,motor3_enable,motor3_direction,motor3_position))
+    #         print(f"Received values: {results}")
+    #     except:
+    #         print("Microcontroller not found or not connected")
+    #         return
+    def motor_task(self, task_id):
+        # send to motor position
+        print(f"task: moving to position {task_id}")
+        self.planned_position = task_id
+        self.motor_position()
 
     def motor_position(self):
         position_in_degree = self.planned_position
