@@ -1,6 +1,6 @@
 {% extends "layouts/base.html" %}
 
-{% block title %} Blank Page {% endblock %} 
+{% block title %} Stream {% endblock %} 
 
 <!-- Specific Page CSS goes HERE  -->
 {% block stylesheets %}{% endblock stylesheets %}
@@ -15,10 +15,12 @@
           <div class="card">
             <div class="card-header">
               <h5 class="title">
-                SPOC lab hetcam
+                SPOC lab videostream
               </h5>
               <p class="category">
-                  Video Stream
+                  {% if experiment_name: %}
+                    Experiment <b>{{experiment_name}}</b> selected<br>
+                  {% endif %}
               </p>
             </div>
             <div class="card-body">
@@ -33,7 +35,11 @@
               </div>
 
               <img src="{{ url_for('video_feed') }}">
-          
+              <br>
+              {% for line in experiment_positions %}
+                {{line}}<br>
+              {% endfor %}
+
               <div class="navbar">
               
                 <form method = "post">
@@ -58,11 +64,21 @@
                         <i class="fa fa-arrow-left fa" style="color: rgb(0, 87, 63);" aria-hidden="true" ></i>
                       </button>
                     </a>
-                    <!-- <a>
-                      <button> 
-                        <a class="fa-files fa" style="color: rgb(0, 87, 63);" href="/gallery" aria-hidden="true" ></a>
+                    <a href=# id=href_zoom_in>
+                      <button>                  
+                        <i class="fa fa-search-plus fa" style="color: rgb(0, 87, 63);" aria-hidden="true" ></i>
                       </button>
-                    </a> -->
+                    </a>
+                    <a href=# id=href_zoom_out>
+                      <button>                  
+                        <i class="fa fa-search-minus fa" style="color: rgb(0, 87, 63);" aria-hidden="true" ></i>
+                      </button>
+                    </a>
+                    <a>
+                      <button> 
+                        <i class="fa-plus fa" style="color: rgb(0, 87, 63);" href="/add-position" aria-hidden="true" ></i>
+                      </button>
+                    </a>
                     <a href=# id=picture>
                       <button>                  
                         <i class="fa-camera fa" style="color: rgb(0, 87, 63);" aria-hidden="true" ></i>
@@ -110,7 +126,6 @@
     //json - parse to Python
     // Motor - 90°
     $('a#href_0').bind('click', function() {
-      // $.getJSON('/move_deg?x_position=0?y_position=1000?z_position=0]',
       $.getJSON('/move_deg?xyz_position=0&xyz_position=10000&xyz_position=0',
           function(data) {
         //do nothing
@@ -139,6 +154,21 @@
     // - Motor - 270°
     $('a#href_270').bind('click', function() {
       $.getJSON('/move_deg?xyz_position=-10000&xyz_position=0&xyz_position=0',
+          function(data) {
+        //do nothing
+      });
+      return false;
+    });
+
+    $('a#href_zoom_out').bind('click', function() {
+      $.getJSON('/move_deg?xyz_position=0&xyz_position=0&xyz_position=-10000',
+          function(data) {
+        //do nothing
+      });
+      return false;
+    });
+    $('a#href_zoom_in').bind('click', function() {
+      $.getJSON('/move_deg?xyz_position=0&xyz_position=0&xyz_position=10000',
           function(data) {
         //do nothing
       });

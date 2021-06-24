@@ -91,7 +91,7 @@ scheduler = APScheduler()
 scheduler.init_app(app)
 scheduler.start()
 
-INTERVAL = 1 # experiment time in minutes
+INTERVAL = 5 # experiment time in minutes
 EXPERIMENT_NAME = "default"
 EXPERIMENT_POSITIONS = [[0, 0, 0],[0, 10000, 0],[10000, 0, 0],[10000, 10000, 0]]
 DATABASE = []
@@ -100,14 +100,16 @@ DATABASE = []
 @app.route('/index')
 def index():
     current_experiment = select_flagged_experiment()
-    print(current_experiment.name)
+    print(f"Current experiment name(s): {current_experiment.name}")
     """Video streaming home page."""
     # return render_template('index.html', images=images)
+    # return render_template("index.html", experiment_name = current_experiment.name)
     return render_template('index.html')
+    
 
 def gen(camera):
     current_experiment = select_flagged_experiment()
-    print(current_experiment.name)
+    print(f"Current experiment name(s): {current_experiment.name}")
     """Video streaming generator function."""
     # global global_video_frame
     # global global_video_frame_timepoint
@@ -147,7 +149,7 @@ def move_deg():
 
     print(f"Moving to {xyz_position}°")
     current_experiment = select_flagged_experiment()
-    print(current_experiment.name)
+    print(f"Current experiment name(s): {current_experiment.name}")
     # it should be possible to add to the planned position, not the current
     # otherwise, movement has to be finished to send another
     current_experiment.planned_position = [x + y for x, y in zip(current_experiment.planned_position, xyz_position)]
@@ -173,7 +175,7 @@ def toggled_status():
     # create dummy experiment for now
     # new_experiment = Experiment(EXPERIMENT_NAME, scheduler, IMAGEPATH, Camera, [0, 90, 180, 270], INTERVAL)
     current_experiment = select_flagged_experiment()
-    print(current_experiment.name)
+    print(f"Current experiment name(s): {current_experiment.name}")
     # if Automatic On was sent and no jobs are scheduled
     if(current_status == 'Automatic Off') and not(scheduler.get_jobs()):
         print("Switching On")
@@ -201,7 +203,6 @@ def toggled_status():
 @app.route('/picture')
 def picture():
     current_experiment = select_flagged_experiment()
-    print(current_experiment.name)
     current_experiment.picture_task()
     print(f"Picture saved in Experiment: {current_experiment.name}")
     print(f"There are {len(current_experiment.saved_positions)} saved positions")
@@ -217,7 +218,7 @@ def picture():
 @app.route("/gallery")
 def show_gallery():
     current_experiment = select_flagged_experiment()
-    print(current_experiment.name)
+    print(f"Current experiment name(s): {current_experiment.name}")
     raw_image_foldername = f'{current_experiment.image_path}/{current_experiment.name}/{current_experiment.raw_dir}/'
     raw_image_list = os.listdir(raw_image_foldername)
     print(raw_image_list)
@@ -228,7 +229,7 @@ def show_gallery():
 @app.route("/gallery-skeleton")
 def show_gallery_skeleton():
     current_experiment = select_flagged_experiment()
-    print(current_experiment.name)
+    print(f"Current experiment name(s): {current_experiment.name}")
 
     # this should be done via button or algorithm
     # in times where cpu load is low or after experiment
@@ -248,7 +249,7 @@ def show_gallery_skeleton():
 @app.route("/gallery-yolo")
 def show_yolo():
     current_experiment = select_flagged_experiment()
-    print(current_experiment.name)
+    print(f"Current experiment name(s): {current_experiment.name}")
 
     # this should be done via button or algorithm
     # in times where cpu load is low or after experiment
@@ -264,6 +265,14 @@ def show_yolo():
     foldername_gallery = f'{current_experiment.name}/{current_experiment.yolo_dir}/'
     return render_template("gallery.html", image_foldername = foldername_gallery,
     experiment_name = current_experiment.name, images = yolo_image_list)
+
+@app.route("/add-position")
+def add_position():
+    current_experiment = select_flagged_experiment()
+    print(f"Current experiment name(s): {current_experiment.name}")
+    current_experiment.add_current_experiment_position()
+    # return experiment_positions=f"{current_experiment.experiment_positions}"
+    return render_template("index.html", experiment_name = current_experiment.name, experiment_positions=current_experiment.show_experiment_positions())
 
 # flask form for experiment selection
 # https://python-adv-web-apps.readthedocs.io/en/latest/flask_forms.html
