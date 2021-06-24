@@ -44,6 +44,10 @@ This robot is a proposal of an automated het-cam experiment.
 * Software for the Microscope
 ** TODO Introduction 
 
+pip install -r requirements.txt
+for torch on armv7l:
+https://github.com/Kashu7100/pytorch-armv7l
+
 How to make the script run on startup:
 sudo nano /etc/rc.local
 

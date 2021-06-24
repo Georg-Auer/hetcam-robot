@@ -44,7 +44,42 @@ struct STRUCT {
 
 int ledPin = 13;     // pin that the led is attached to
 //int analogvalue = 0;
+int32_t arduino_motorA = 0;
+int32_t arduino_motorB = 0;
+int32_t arduino_motorC = 0;
 
+int calculate_motorA(int32_t x_movement, int32_t y_movement, int32_t z_movement){
+  //calculate arduino_motor A,B,C here
+  int delta_arms = 1214550;  // L=60.12mm 1step = 0.0495um =1214550 ticks
+  //int delta_radius = ????;
+  int Ax0 = 408178; //=Bx0
+  int Ay0 = 235663; //=By0
+  arduino_motorA = (sqrt((pow(delta_arms,2))-(pow((Ax0+x_movement),2))-(pow((Ay0+y_movement),2))))-z_movement-0.5; //-0.5 to round down!
+  int start_value = 1119367;
+  arduino_motorA = arduino_motorA-start_value;
+  return (arduino_motorA);
+}
+int calculate_motorB(int32_t x_movement, int32_t y_movement, int32_t z_movement){
+  //calculate arduino_motor A,B,C here
+  int delta_arms = 1214550;  // L=60.12mm 1step = 0.0495um =1214550 ticks
+  //int delta_radius = ????;
+  int Ax0 = 408178; //=Bx0
+  int Ay0 = 235663; //=By0
+  arduino_motorB = (sqrt(pow(delta_arms,2)-(pow((Ax0-x_movement),2))-(pow((Ay0+y_movement),2))))-z_movement-0.5; //-0.5 to round down!
+  int start_value = 1119367;
+  arduino_motorB = arduino_motorB-start_value;
+  return (arduino_motorB);
+}
+int calculate_motorC(int32_t x_movement, int32_t y_movement, int32_t z_movement){
+  //calculate arduino_motor A,B,C here
+  int delta_arms = 1214550;  // L=60.12mm 1step = 0.0495um =1214550 ticks
+  //int delta_radius = ????;
+  int Cy0 = 471323;
+  arduino_motorC = (sqrt((pow(delta_arms,2))-(pow(x_movement,2))-(pow((Cy0-y_movement),2))))-z_movement-0.5; //-0.5 to round down!
+  int start_value = 1119368;
+  arduino_motorC = arduino_motorC-start_value;
+  return (arduino_motorC);
+}
 SerialTransfer myTransfer;
 
 void setup()  
@@ -91,6 +126,10 @@ void loop()
     digitalWrite (motor2_en, testStruct.motor2_enable); //motor2
     digitalWrite (motor3_en, testStruct.motor3_enable); //motor3
 
+    //from microcope.ino
+    arduino_motorA = calculate_motorA(testStruct.motor0_position,testStruct.motor1_position,testStruct.motor2_position);
+    arduino_motorB = calculate_motorB(testStruct.motor0_position,testStruct.motor1_position,testStruct.motor2_position);
+    arduino_motorC = calculate_motorC(testStruct.motor0_position,testStruct.motor1_position,testStruct.motor2_position);
     
     // send all received data back to Python
     for(uint16_t i=0; i < myTransfer.bytesRead; i++)
@@ -99,15 +138,20 @@ void loop()
     myTransfer.sendData(myTransfer.bytesRead);
   }
 
-  motor0.moveTo(testStruct.motor0_position);
-  motor1.moveTo(testStruct.motor1_position);
-  motor2.moveTo(testStruct.motor2_position);
-  motor3.moveTo(testStruct.motor3_position);
+  // motor0.moveTo(testStruct.motor0_position);
+  // motor1.moveTo(testStruct.motor1_position);
+  // motor2.moveTo(testStruct.motor2_position);
+  // motor3.moveTo(testStruct.motor3_position);
 
-  motor0.setSpeed(700);
-  motor1.setSpeed(700);
-  motor2.setSpeed(700);
-  motor3.setSpeed(700);
+  motor0.moveTo(arduino_motorA);
+  motor1.moveTo(arduino_motorB);
+  motor2.moveTo(arduino_motorC);
+  // motor3.moveTo(testStruct.motor3_position);
+
+  motor0.setSpeed(10000);
+  motor1.setSpeed(10000);
+  motor2.setSpeed(10000);
+  motor3.setSpeed(10000);
 
   motor0.runSpeedToPosition();  
   motor1.runSpeedToPosition();
@@ -115,9 +159,7 @@ void loop()
   motor3.runSpeedToPosition();
 
   if (motor0.distanceToGo()== 0){
-    delay(500);
     digitalWrite (motor0_en, HIGH); //motor0
-    //delay(500);
     testStruct.motor0_enable = 1; // turn motor off after distanceToGo is 0
   }
   if (motor1.distanceToGo()== 0){

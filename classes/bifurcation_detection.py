@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
 import imutils
-import fingerprint_feature_extractor
+from classes.fingerprint import extract_minutiae_features
 
 def prepare_and_analyze(img, scale_percent = 10):
     # # only use the red component, because structure is red
@@ -84,7 +84,7 @@ def prepare_and_analyze(img, scale_percent = 10):
 
     # find line terminations and bifurcations
     print("Calculating vascular terminations and bifurcations..")
-    FeaturesTerminations, FeaturesBifurcations = fingerprint_feature_extractor.extract_minutiae_features(thresh255, showResult=False, spuriousMinutiaeThresh=5)
+    FeaturesTerminations, FeaturesBifurcations = extract_minutiae_features(thresh255, showResult=False, spuriousMinutiaeThresh=5)
 
     # this does not work with this fingerprint library
     # name = "bifurcations"

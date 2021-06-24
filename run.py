@@ -93,7 +93,7 @@ scheduler.start()
 
 INTERVAL = 1 # experiment time in minutes
 EXPERIMENT_NAME = "default"
-EXPERIMENT_POSITIONS = [0, 90, 180, 270]
+EXPERIMENT_POSITIONS = [[0, 0, 0],[0, 10000, 0],[10000, 0, 0],[10000, 10000, 0]]
 DATABASE = []
 
 @app.route('/')
@@ -136,18 +136,24 @@ def video_feed():
 
 @app.route('/move_deg')
 def move_deg():
-    degree = 0
-    degree = int(request.args.get('degree'))
-    if(degree >= 280):
-        degree = 270
-    if(degree <= -90):
-        degree = -90
-    print(f"Moving to {degree}°")
+    xyz_position = [0, 0, 0]
+    xyz_position = request.args.getlist('xyz_position', type=int)
+
+    # needs to be readjusted for x y
+    # if(xyz_position >= 280):
+    #     xyz_position = 270
+    # if(xyz_position <= -90):
+    #     xyz_position = -90
+
+    print(f"Moving to {xyz_position}°")
     current_experiment = select_flagged_experiment()
     print(current_experiment.name)
-    current_experiment.planned_position = degree
+    # it should be possible to add to the planned position, not the current
+    # otherwise, movement has to be finished to send another
+    current_experiment.planned_position = [x + y for x, y in zip(current_experiment.planned_position, xyz_position)]
+
     current_experiment.motor_position()
-    return '''<h1>Moving to: {}</h1>'''.format(degree)
+    return '''<h1>Moving to: {}</h1>'''.format(xyz_position)
     # return ("nothing")
 
 #-------------------------------------------------------------------------------------

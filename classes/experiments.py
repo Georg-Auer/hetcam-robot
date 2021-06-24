@@ -16,7 +16,7 @@ class Experiment(object):
         self.name = name
         self.experiment_positions = experiment_positions
         self.interval_minutes = interval_minutes
-        self.current_position = self.planned_position = 0
+        self.current_position = self.planned_position = [0,0,0]
         # list of experiment positions
         # created during the experiment
         self.saved_positions = []
@@ -30,12 +30,13 @@ class Experiment(object):
         self.x_resolution, self.y_resolution = self.resolution
         self.experiment_running = False
         self.flag = False
-        self.motor_comport = '/dev/ttyACM0'
+        # self.motor_comport = '/dev/ttyACM0'
+        self.motor_comport = 'COM21'
         self.creation_time = datetime.today()
         self.exp_foldername = f'{self.image_path}/{self.name}'
-        self.raw_dir = "het-cam-raw"
-        self.skeleton_dir = "het-cam-skeleton"
-        self.yolo_dir = "het-cam-yolo"
+        self.raw_dir = "microscope-raw"
+        self.skeleton_dir = "microscope-skeleton"
+        self.yolo_dir = "microscope-yolo"
         self.img_variant_folders = [self.raw_dir,self.skeleton_dir,self.yolo_dir]
         self.create_directories()
 
@@ -83,14 +84,14 @@ class Experiment(object):
         print(f"Moving time is assumed {moving_time} seconds") 
         task_seperation_increase = moving_time*2
         task_seperation = 1
-        for degree in self.experiment_positions: 
-            print(degree)
+        for xyz_position in self.experiment_positions: 
+            print(xyz_position)
             schedule_time_movement = schedule_start + timedelta(seconds=task_seperation)
             schedule_time_picture = schedule_start + timedelta(seconds=moving_time+task_seperation)
-            self.scheduler.add_job(func=self.motor_task_creator, trigger='date', run_date=schedule_time_movement, args=[degree], id='move_start'+str(degree))
-            print(f"created moving job {degree} running at {schedule_time_movement}")
-            self.scheduler.add_job(func=self.picture_task_creator, trigger='date', run_date=schedule_time_picture, args=[degree], id='picture_start'+str(degree))
-            print(f"created picture job {degree} running at {schedule_time_picture}")
+            self.scheduler.add_job(func=self.motor_task_creator, trigger='date', run_date=schedule_time_movement, args=[xyz_position], id='move_start'+str(xyz_position))
+            print(f"created moving job {xyz_position} running at {schedule_time_movement}")
+            self.scheduler.add_job(func=self.picture_task_creator, trigger='date', run_date=schedule_time_picture, args=[xyz_position], id='picture_start'+str(xyz_position))
+            print(f"created picture job {xyz_position} running at {schedule_time_picture}")
             task_seperation = task_seperation + task_seperation_increase
 
     def stop_experiment(self):
@@ -223,34 +224,50 @@ class Experiment(object):
         self.planned_position = task_id
         self.motor_position()
 
-    # def motor_position(self, position_in_degree):
     def motor_position(self):
-        position_in_degree = self.planned_position
-        print(f"motor_position {position_in_degree}")
+        # position_in_degree = self.planned_position
+        print(f"planned_position {self.planned_position}")
+        # xyz_position = self.planned_position
+        # print(f"xyz_position {xyz_position}")
+        # print(f"xyz_position {xyz_position[0]}")
+        # print(f"xyz_position {xyz_position[1]}")
+        # print(f"xyz_position {xyz_position[2]}")
+
+        # x_position, y_position, z_position = xyz_position
+        # print(f"x_position, y_position, z_position {x_position, y_position, z_position}")
+
         # 4800 steps are 270°, 360 should never be possible since = 0°
         # degrees are divided by 90 and multiplied by 1600
         # only send int values to arduino!
-        step_position_arduino = int(position_in_degree/90*1600)
-        print(f"Sending: {step_position_arduino} steps")
+        # step_position_arduino = int(position_in_degree/90*1600)
+        # print(f"Sending: {x_position, y_position, z_position}")
+        # print(f"types: {type(x_position), type(y_position), type(z_position)}")
         try:
             # results = np.array(connect_to_arduino(comport = '/dev/ttyACM0',motor0_enable,motor0_direction,step_position_arduino,
             #     motor1_enable,motor1_direction,motor1_position,motor2_enable,motor2_direction,motor2_position,motor3_enable,motor3_direction,motor3_position))
             # enabled = 0, disabled = 1; 0 = counterclockwise 1 = clockwise
-            results = np.array(connect_to_arduino(self.motor_comport, 0, 0, step_position_arduino))
+            # results = np.array(connect_to_arduino(self.motor_comport, 0, 0, x_position, 0, 0, y_position, 0, 0, z_position))
+            results = np.array(connect_to_arduino(self.motor_comport, 0, 0, self.planned_position[0], 0, 0, self.planned_position[1], 0, 0, self.planned_position[2]))
             print(f"Received values: {results}")
             # this could be parsed and converted to degree
             # or just assume motor has moved to destination
-            self.current_position = position_in_degree
+            self.current_position = self.planned_position
+            # print(type(results))
+            # print(f"Current position: {self.current_position}")
+            # self.current_position = results[4],results[7],results[10]
+            print(f"Current position: {self.current_position}")
         except:
             print("Microcontroller not found or not connected")
+            print("Setting position to 0, 0, 0")
+            self.current_position = [0,0,0]
             return
 class Position(object):
     # raw_image, skeletal_image,
     # feature_bifurcations, feature_endings, yolo_image, yolo_classes,
     # yolo_coordinates, yolo_poi_circles, features_bifurcations_poi, feature_endings_poi
-    def __init__(self, name, xyz_position_in_degree, exp_foldername, raw_dir, skeleton_dir, yolo_dir, filename, RGB_img):
+    def __init__(self, name, xyz_position, exp_foldername, raw_dir, skeleton_dir, yolo_dir, filename, RGB_img):
         self.name = name
-        self.position = xyz_position_in_degree # z stays the same in this robot
+        self.position = xyz_position
         self.timestamp = datetime.now().strftime("%Y%m%d-%H%M%S")
         self.filename = filename
         self.raw_image = RGB_img

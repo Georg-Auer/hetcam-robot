@@ -35,9 +35,12 @@ class Camera(BaseCamera):
         print(f"camera_opencv resolution: {resolution}")
         camera = cv2.VideoCapture(Camera.video_source)
 
-        # https://www.codingforentrepreneurs.com/blog/open-cv-python-change-video-resolution-or-scale
-        camera.set(3, resolution[0])
-        camera.set(4, resolution[1])
+        try:
+            # https://www.codingforentrepreneurs.com/blog/open-cv-python-change-video-resolution-or-scale
+            camera.set(3, resolution[0])
+            camera.set(4, resolution[1])
+        except:
+            print("could not set resolution in camera_opencv")
 
         if not camera.isOpened():
             raise RuntimeError('Could not start camera.')

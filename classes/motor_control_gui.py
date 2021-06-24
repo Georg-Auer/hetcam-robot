@@ -1,3 +1,7 @@
+# pip install pySerial
+# pip install pySerialTransfer
+# pip install dearpygui
+
 
 from pyserial_connection_arduino import connect_to_arduino, list_available_ports
 import numpy as np
@@ -10,10 +14,10 @@ comport = '/dev/ttyACM0'
 motor0_enable = 0
 motor0_direction = 0
 motor0_position = 0
-motor1_enable = 1
+motor1_enable = 0
 motor1_direction = 0
 motor1_position = 0
-motor2_enable = 1
+motor2_enable = 0
 motor2_direction = 0
 motor2_position = 0
 motor3_enable = 1

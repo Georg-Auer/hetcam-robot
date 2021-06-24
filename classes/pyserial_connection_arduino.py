@@ -7,7 +7,8 @@ from pySerialTransfer import pySerialTransfer as txfer
 # on teensy: include "SerialTransfer.h" Version 2.0
 # updated: now works with current SerialTransfer.h, and pySerialTransfer (27.02.2021)
 
-def connect_to_arduino(comport = '/dev/ttyACM0',
+# def connect_to_arduino(comport = '/dev/ttyACM0',
+def connect_to_arduino(comport = 'COM21',
         motor0_enable = 1, motor0_direction = 0, motor0_position = 0,
         motor1_enable = 1, motor1_direction = 0, motor1_position = 0,
         motor2_enable = 1, motor2_direction = 0, motor2_position = 0,
