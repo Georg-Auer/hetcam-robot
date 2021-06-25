@@ -61,18 +61,10 @@ sudo pip3 install torchvision-0.8.0a0+45f960c-cp37-cp37m-linux_armv7l.whl
 # install on all systems:
 sudo pip3 install -r requirements.txt
 
-
-How to make the script run on startup:
-sudo nano /etc/rc.local
-
-start cam with 
-sudo CAMERA=opencv python3 run.py
-to open on restricted port 80
-
 How to make the script run on startup:
 sudo nano /etc/rc.local
 insert:
-sudo CAMERA=opencv python3 run.py &
+sudo CAMERA=opencv python3 /het-cam-dashboard/run.py &
 
 or for additional logging:
 sudo CAMERA=opencv python3 run.py & > /home/pi/Desktop/log.txt 2>&1
