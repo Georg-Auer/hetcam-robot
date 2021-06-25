@@ -44,14 +44,24 @@ class Experiment(object):
     #     print(f"Time between imaging in experiment {self.name} set to {self.time_between} minutes")
 
     def show_experiment_positions(self):
-        print("These are all planned positions")
-        print(self.experiment_positions)
+        n = 0
+        return_string = []
+        for xyz_positions in self.experiment_positions:
+            print(f"Position {n}, x = {xyz_positions[0]}, y = {xyz_positions[1]} z = {xyz_positions[2]}")
+            return_string.append(f"Position {n}, x = {xyz_positions[0]}, y = {xyz_positions[1]} z = {xyz_positions[2]}\n")
+            n += 1
+        print(return_string)
+        # return f"These are all planned positions\n {self.experiment_positions} of experiment {self.name}"
+        # return f"These are all planned positions\n {return_string}"
+        return return_string
+
+        
     def remove_experiment_positions(self):
         print("Removing all planned positions")
         self.experiment_positions = []
-    def add_experiment_positions(self, new_position):
-        print(f"Adding new planned position {new_position}")
-        self.experiment_positions.append(new_position)
+    def add_current_experiment_position(self):
+        print(f"Adding current position {self.current_position}")
+        self.experiment_positions.append(self.current_position)
         print("These are all planned positions")
         print(self.experiment_positions)
 

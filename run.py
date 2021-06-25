@@ -3,6 +3,7 @@
 start with: sudo CAMERA=opencv python3 run.py
 """
 
+from classes.pyserial_connection_arduino import list_available_ports
 from flask_migrate import Migrate
 from os import environ
 from sys import exit
@@ -91,23 +92,26 @@ scheduler = APScheduler()
 scheduler.init_app(app)
 scheduler.start()
 
-INTERVAL = 1 # experiment time in minutes
+INTERVAL = 5 # experiment time in minutes
 EXPERIMENT_NAME = "default"
-EXPERIMENT_POSITIONS = [[0, 0, 0],[0, 10000, 0],[10000, 0, 0],[10000, 10000, 0]]
+# EXPERIMENT_POSITIONS = [[0, 0, 0],[0, 10000, 0],[10000, 0, 0],[10000, 10000, 0]]
+EXPERIMENT_POSITIONS = []
 DATABASE = []
 
 @app.route('/')
 @app.route('/index')
 def index():
     current_experiment = select_flagged_experiment()
-    print(current_experiment.name)
+    print(f"Current experiment name(s): {current_experiment.name}")
     """Video streaming home page."""
     # return render_template('index.html', images=images)
+    # return render_template("index.html", experiment_name = current_experiment.name)
     return render_template('index.html')
+    
 
 def gen(camera):
     current_experiment = select_flagged_experiment()
-    print(current_experiment.name)
+    print(f"Current experiment name(s): {current_experiment.name}")
     """Video streaming generator function."""
     # global global_video_frame
     # global global_video_frame_timepoint
@@ -147,7 +151,7 @@ def move_deg():
 
     print(f"Moving to {xyz_position}°")
     current_experiment = select_flagged_experiment()
-    print(current_experiment.name)
+    print(f"Current experiment name(s): {current_experiment.name}")
     # it should be possible to add to the planned position, not the current
     # otherwise, movement has to be finished to send another
     current_experiment.planned_position = [x + y for x, y in zip(current_experiment.planned_position, xyz_position)]
@@ -173,7 +177,7 @@ def toggled_status():
     # create dummy experiment for now
     # new_experiment = Experiment(EXPERIMENT_NAME, scheduler, IMAGEPATH, Camera, [0, 90, 180, 270], INTERVAL)
     current_experiment = select_flagged_experiment()
-    print(current_experiment.name)
+    print(f"Current experiment name(s): {current_experiment.name}")
     # if Automatic On was sent and no jobs are scheduled
     if(current_status == 'Automatic Off') and not(scheduler.get_jobs()):
         print("Switching On")
@@ -201,7 +205,6 @@ def toggled_status():
 @app.route('/picture')
 def picture():
     current_experiment = select_flagged_experiment()
-    print(current_experiment.name)
     current_experiment.picture_task()
     print(f"Picture saved in Experiment: {current_experiment.name}")
     print(f"There are {len(current_experiment.saved_positions)} saved positions")
@@ -217,7 +220,7 @@ def picture():
 @app.route("/gallery")
 def show_gallery():
     current_experiment = select_flagged_experiment()
-    print(current_experiment.name)
+    print(f"Current experiment name(s): {current_experiment.name}")
     raw_image_foldername = f'{current_experiment.image_path}/{current_experiment.name}/{current_experiment.raw_dir}/'
     raw_image_list = os.listdir(raw_image_foldername)
     print(raw_image_list)
@@ -228,7 +231,7 @@ def show_gallery():
 @app.route("/gallery-skeleton")
 def show_gallery_skeleton():
     current_experiment = select_flagged_experiment()
-    print(current_experiment.name)
+    print(f"Current experiment name(s): {current_experiment.name}")
 
     # this should be done via button or algorithm
     # in times where cpu load is low or after experiment
@@ -248,7 +251,7 @@ def show_gallery_skeleton():
 @app.route("/gallery-yolo")
 def show_yolo():
     current_experiment = select_flagged_experiment()
-    print(current_experiment.name)
+    print(f"Current experiment name(s): {current_experiment.name}")
 
     # this should be done via button or algorithm
     # in times where cpu load is low or after experiment
@@ -264,6 +267,14 @@ def show_yolo():
     foldername_gallery = f'{current_experiment.name}/{current_experiment.yolo_dir}/'
     return render_template("gallery.html", image_foldername = foldername_gallery,
     experiment_name = current_experiment.name, images = yolo_image_list)
+
+@app.route("/add-position")
+def add_position():
+    current_experiment = select_flagged_experiment()
+    print(f"Current experiment name(s): {current_experiment.name}")
+    current_experiment.add_current_experiment_position()
+    # return experiment_positions=f"{current_experiment.experiment_positions}"
+    return render_template("index.html", experiment_name = current_experiment.name, experiment_positions=current_experiment.show_experiment_positions())
 
 # flask form for experiment selection
 # https://python-adv-web-apps.readthedocs.io/en/latest/flask_forms.html
@@ -294,8 +305,11 @@ class ExperimentForm(FlaskForm):
     # positions = BooleanField('Position 0', false_values=None)
     # string_of_files = ['0\r\n90\r\n180\r\n']
     # options:
-    string_of_files = ['0\r\n90\r\n180\r\n270\r\n']
+    string_of_files = ['0,0,0\r\n1000,0,0\r\n0,1000,0\r\n-1000,0,0\r\n0,-1000,0\r\n']
     list_of_files = string_of_files[0].split()
+    # print(list_of_files)
+    # print(type(list_of_files))
+    # print(type(list_of_files[0]))
     # create a list of value/description tuples
     files = [(x, x) for x in list_of_files]
     positions = MultiCheckboxField('Positions', choices=files)
@@ -335,7 +349,15 @@ def experiments():
                     experiment.flag = False
                     print(f"Experiment {experiment.name} unflagged")
             interval = int(form.interval.data)
-            experiment_positions = list(map(int, form.positions.data))
+            # experiment_positions = list(map(list, form.positions.data))
+            # experiment_positions = list(map(int, form.positions.data))
+            print(type(form.positions.data))
+            print(form.positions.data)
+            # this is unreadable, sorry
+            # it converts the strings in the list of list to int
+            experiment_positions = [[int(num) for num in map(int, sub.split(','))] for sub in form.positions.data]
+            print(experiment_positions)
+
             experiment_name = name.lower() # experiments are forced into lowercase
             new_experiment = Experiment(experiment_name, scheduler,
                 IMAGEPATH, Camera, experiment_positions, interval)
