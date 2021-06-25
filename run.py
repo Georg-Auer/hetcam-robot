@@ -101,8 +101,6 @@ DATABASE = []
 @app.route('/')
 @app.route('/index')
 def index():
-    current_experiment = select_flagged_experiment()
-    print(f"Current experiment name(s): {current_experiment.name}")
     """Video streaming home page."""
     # return render_template('index.html', images=images)
     # return render_template("index.html", experiment_name = current_experiment.name)
