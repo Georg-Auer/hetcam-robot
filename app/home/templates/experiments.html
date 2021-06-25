@@ -23,7 +23,7 @@
               </h5>
               <p class="lead">Load an experiment by click:</p>
                 {% for name, position_list, interval in names|zip(positions, intervals) %}
-                  <a class="dropdown-item" href="/experiment/{{name}}">Experiment:  <b>{{name}}</b>  with positions:<br> <b>{% for item in position_list %}{{item}}<br>{% endfor %}</b> and an interval of <b>{{interval}} minutes.</b></a>
+                  <a class="dropdown-item" href="/experiment/{{name}}">Experiment:  <b>{{name}}</b>  with x/y/z position(s):<br> <b>{% for item in position_list %}{{item}}<br>{% endfor %}</b> and an interval of <b>{{interval}} minutes.</b></a>
                 {% endfor %}
               </p>
             </div>
