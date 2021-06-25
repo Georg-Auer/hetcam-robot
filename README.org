@@ -64,7 +64,12 @@ sudo pip3 install -r requirements.txt
 How to make the script run on startup:
 sudo nano /etc/rc.local
 insert:
-sudo CAMERA=opencv python3 ~/het-cam-dashboard/run.py &
+cd home/pi/het-cam-dashboard
+sudo CAMERA=opencv python3 run.py &
+
+# git pull on startup
+sudo nano ~/.profile
+git --git-dir=/het-cam-dashboard/.git pull microscope
 
 or for additional logging:
 sudo CAMERA=opencv python3 run.py & > /home/pi/Desktop/log.txt 2>&1
