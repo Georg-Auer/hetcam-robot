@@ -46,22 +46,22 @@
                   <div class="camera-movement">
                     <a href=# id=href_0>
                       <button>                   
-                        <i class="fa fa-arrow-down fa" style="color: rgb(0, 87, 63);" aria-hidden="true"></i>
+                        <i class="fa fa-arrow-left fa" style="color: rgb(0, 87, 63);" aria-hidden="true"></i>
                       </button>
                     </a>
                     <a href=# id=href_90>
                       <button>                   
-                        <i class="fa fa-arrow-right" style="color: rgb(0, 87, 63);" aria-hidden="true"></i>
+                        <i class="fa fa-arrow-up fa" style="color: rgb(0, 87, 63);" aria-hidden="true"></i>
                       </button>
                     </a>
                     <a href=# id=href_180>
                       <button>                  
-                        <i class="fa fa-arrow-up" style="color: rgb(0, 87, 63);" aria-hidden="true" ></i>
+                        <i class="fa fa-arrow-right fa" style="color: rgb(0, 87, 63);" aria-hidden="true" ></i>
                       </button>
                     </a>
                     <a href=# id=href_270>
                       <button>                  
-                        <i class="fa fa-arrow-left fa" style="color: rgb(0, 87, 63);" aria-hidden="true" ></i>
+                        <i class="fa fa-arrow-down fa" style="color: rgb(0, 87, 63);" aria-hidden="true" ></i>
                       </button>
                     </a>
                     <a href=# id=href_zoom_in>
@@ -74,9 +74,9 @@
                         <i class="fa fa-search-minus fa" style="color: rgb(0, 87, 63);" aria-hidden="true" ></i>
                       </button>
                     </a>
-                    <a>
+                    <a href=# id=href_add_position>
                       <button> 
-                        <i class="fa-plus fa" style="color: rgb(0, 87, 63);" href="/add-position" aria-hidden="true" ></i>
+                        <i class="fa-plus fa" style="color: rgb(0, 87, 63);" aria-hidden="true" ></i>
                       </button>
                     </a>
                     <a href=# id=picture>
@@ -169,6 +169,13 @@
     });
     $('a#href_zoom_in').bind('click', function() {
       $.getJSON('/move_deg?xyz_position=0&xyz_position=0&xyz_position=10000',
+          function(data) {
+        //do nothing
+      });
+      return false;
+    });
+    $('a#href_add_position').bind('click', function() {
+      $.getJSON('/add-position',
           function(data) {
         //do nothing
       });

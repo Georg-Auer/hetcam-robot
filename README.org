@@ -44,21 +44,32 @@ This robot is a proposal of an automated het-cam experiment.
 * Software for the Microscope
 ** TODO Introduction 
 
+git clone --branch microscope https://github.com/Georg-Auer/het-cam-dashboard.git
+
 pip install -r requirements.txt
 for torch on armv7l:
 https://github.com/Kashu7100/pytorch-armv7l
 
-How to make the script run on startup:
-sudo nano /etc/rc.local
+# install torch on Raspberry 3/4:
+sudo apt install libopenblas-dev libblas-dev m4 cmake cython python3-dev python3-yaml python3-setuptools
+cd ~/Downloads
+git clone https://github.com/Kashu7100/pytorch-armv7l.git
+cd pytorch-armv7l/
+sudo pip3 install torch-1.7.0a0-cp37-cp37m-linux_armv7l.whl
+sudo pip3 install torchvision-0.8.0a0+45f960c-cp37-cp37m-linux_armv7l.whl
 
-start cam with 
-sudo CAMERA=opencv python3 run.py
-to open on restricted port 80
+# install on all systems:
+sudo pip3 install -r requirements.txt
 
 How to make the script run on startup:
 sudo nano /etc/rc.local
 insert:
+cd home/pi/het-cam-dashboard
 sudo CAMERA=opencv python3 run.py &
+
+# git pull on startup
+sudo nano ~/.profile
+git --git-dir=/het-cam-dashboard/.git pull microscope
 
 or for additional logging:
 sudo CAMERA=opencv python3 run.py & > /home/pi/Desktop/log.txt 2>&1

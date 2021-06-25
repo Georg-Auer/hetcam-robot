@@ -22,7 +22,7 @@ class Experiment(object):
         self.saved_positions = []
         self.scheduler = scheduler
         self.image_path = image_path
-        # self.Camera = Camera
+        self.Camera = Camera
         # self.resolution = [1280, 720]
         # self.resolution = [4056, 3040]
         self.resolution = [2592, 1952]
@@ -30,8 +30,8 @@ class Experiment(object):
         self.x_resolution, self.y_resolution = self.resolution
         self.experiment_running = False
         self.flag = False
-        # self.motor_comport = '/dev/ttyACM0'
-        self.motor_comport = 'COM21'
+        self.motor_comport = '/dev/ttyACM0'
+        # self.motor_comport = 'COM21'
         self.creation_time = datetime.today()
         self.exp_foldername = f'{self.image_path}/{self.name}'
         self.raw_dir = "microscope-raw"
@@ -132,36 +132,36 @@ class Experiment(object):
     def picture_task(self):
         print(f"task: start to take picture {self.current_position}")
         # use webcam?
-        # frame = self.Camera().get_frame()
+        frame = self.Camera().get_frame()
         video_frame_timepoint = (datetime.now().strftime("%Y%m%d-%H%M%S"))
         filename = f'position{self.current_position}_{video_frame_timepoint}.jpg'
         file_in_foldername = f'{self.image_path}/{self.name}/{self.raw_dir}/{filename}'
         # https://picamera.readthedocs.io/en/release-1.13/recipes1.html
         # https://picamera.readthedocs.io/en/release-1.13/recipes2.html
         # https://picamera.readthedocs.io/en/release-1.13/fov.html#sensor-modes
-        # gif_bytes_io = BytesIO()
-        # gif_bytes_io.write(frame)
-        # image = Image.open(gif_bytes_io)
-        # open_cv_image = np.array(image)
-        # RGB_img = cv2.cvtColor(open_cv_image, cv2.COLOR_BGR2RGB)
+        gif_bytes_io = BytesIO()
+        gif_bytes_io.write(frame)
+        image = Image.open(gif_bytes_io)
+        open_cv_image = np.array(image)
+        RGB_img = cv2.cvtColor(open_cv_image, cv2.COLOR_BGR2RGB)
 
-        try:
-            camera.close()
-            print("camera closed")
-        except:
-            print("camera was not open")
+        # try:
+        #     camera.close()
+        #     print("camera closed")
+        # except:
+        #     print("camera was not open")
 
-        try:
-            from picamera import PiCamera
-            from picamera.array import PiRGBArray
-            import time
-            camera = PiCamera()
-        except:
-            print("camera was not closed last time or is still in use")
-            #camera.close()
-            #rawCapture.close()
+        # try:
+        #     from picamera import PiCamera
+        #     from picamera.array import PiRGBArray
+        #     import time
+        #     camera = PiCamera()
+        # except:
+        #     print("camera was not closed last time or is still in use")
+        #     #camera.close()
+        #     #rawCapture.close()
 
-        print("Raspberry Camera loaded")
+        # print("Raspberry Camera loaded")
         # camera.resolution = (self.x_resolution, self.y_resolution)
         # camera.framerate = 32
         # camera.exposure_mode = 'sports'
@@ -179,20 +179,20 @@ class Experiment(object):
         # rawCapture = PiRGBArray(camera, size=(self.x_resolution, self.y_resolution))
         # allow the camera to warmup
 
-        camera.resolution = (self.x_resolution, self.y_resolution)
-        camera.framerate = 24
-        time.sleep(2)
-        image = np.empty((self.y_resolution * self.x_resolution * 3,), dtype=np.uint8)
-        camera.capture(image, 'bgr')
-        image = image.reshape((self.y_resolution, self.x_resolution, 3))
-        # camera.capture(rawCapture, format="rgb")
-        # RGB_img = rawCapture.array
-        camera.close()
-        # rawCapture.close() #is this even possible?
-        # for testing only
-        # cv2.imshow('image',RGB_img)
-        # cv2.waitKey(0)
-        cv2.imwrite(file_in_foldername, image)
+        # camera.resolution = (self.x_resolution, self.y_resolution)
+        # camera.framerate = 24
+        # time.sleep(2)
+        # image = np.empty((self.y_resolution * self.x_resolution * 3,), dtype=np.uint8)
+        # camera.capture(image, 'bgr')
+        # image = image.reshape((self.y_resolution, self.x_resolution, 3))
+        # # camera.capture(rawCapture, format="rgb")
+        # # RGB_img = rawCapture.array
+        # camera.close()
+        # # rawCapture.close() #is this even possible?
+        # # for testing only
+        # # cv2.imshow('image',RGB_img)
+        # # cv2.waitKey(0)
+        cv2.imwrite(file_in_foldername, RGB_img)
         print(f"image written {file_in_foldername}")
         # self.Camera().set_resolution(new_resolution)
         # create new position with image
