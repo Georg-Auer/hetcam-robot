@@ -44,9 +44,22 @@ This robot is a proposal of an automated het-cam experiment.
 * Software for the Microscope
 ** TODO Introduction 
 
+git clone --branch microscope https://github.com/Georg-Auer/het-cam-dashboard.git
+
 pip install -r requirements.txt
 for torch on armv7l:
 https://github.com/Kashu7100/pytorch-armv7l
+
+# install torch on Raspberry 3/4:
+cd ~/Downloads
+git clone https://github.com/Kashu7100/pytorch-armv7l.git
+cd pytorch-armv7l/
+sudo pip3 install torch-1.7.0a0-cp37-cp37m-linux_armv7l.whl
+sudo pip3 install torchvision-0.8.0a0+45f960c-cp37-cp37m-linux_armv7l.whl
+
+# install on all systems:
+sudo pip3 install -r requirements.txt
+
 
 How to make the script run on startup:
 sudo nano /etc/rc.local
