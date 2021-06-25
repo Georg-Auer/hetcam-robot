@@ -30,8 +30,8 @@ class Experiment(object):
         self.x_resolution, self.y_resolution = self.resolution
         self.experiment_running = False
         self.flag = False
-        # self.motor_comport = '/dev/ttyACM0'
-        self.motor_comport = 'COM21'
+        self.motor_comport = '/dev/ttyACM0'
+        # self.motor_comport = 'COM21'
         self.creation_time = datetime.today()
         self.exp_foldername = f'{self.image_path}/{self.name}'
         self.raw_dir = "microscope-raw"
