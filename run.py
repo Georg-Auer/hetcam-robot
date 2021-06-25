@@ -3,6 +3,7 @@
 start with: sudo CAMERA=opencv python3 run.py
 """
 
+from classes.pyserial_connection_arduino import list_available_ports
 from flask_migrate import Migrate
 from os import environ
 from sys import exit
@@ -93,7 +94,8 @@ scheduler.start()
 
 INTERVAL = 5 # experiment time in minutes
 EXPERIMENT_NAME = "default"
-EXPERIMENT_POSITIONS = [[0, 0, 0],[0, 10000, 0],[10000, 0, 0],[10000, 10000, 0]]
+# EXPERIMENT_POSITIONS = [[0, 0, 0],[0, 10000, 0],[10000, 0, 0],[10000, 10000, 0]]
+EXPERIMENT_POSITIONS = []
 DATABASE = []
 
 @app.route('/')
@@ -303,8 +305,11 @@ class ExperimentForm(FlaskForm):
     # positions = BooleanField('Position 0', false_values=None)
     # string_of_files = ['0\r\n90\r\n180\r\n']
     # options:
-    string_of_files = ['0\r\n90\r\n180\r\n270\r\n']
+    string_of_files = ['0,0,0\r\n1000,0,0\r\n0,1000,0\r\n-1000,0,0\r\n0,-1000,0\r\n']
     list_of_files = string_of_files[0].split()
+    # print(list_of_files)
+    # print(type(list_of_files))
+    # print(type(list_of_files[0]))
     # create a list of value/description tuples
     files = [(x, x) for x in list_of_files]
     positions = MultiCheckboxField('Positions', choices=files)
@@ -344,7 +349,15 @@ def experiments():
                     experiment.flag = False
                     print(f"Experiment {experiment.name} unflagged")
             interval = int(form.interval.data)
-            experiment_positions = list(map(int, form.positions.data))
+            # experiment_positions = list(map(list, form.positions.data))
+            # experiment_positions = list(map(int, form.positions.data))
+            print(type(form.positions.data))
+            print(form.positions.data)
+            # this is unreadable, sorry
+            # it converts the strings in the list of list to int
+            experiment_positions = [[int(num) for num in map(int, sub.split(','))] for sub in form.positions.data]
+            print(experiment_positions)
+
             experiment_name = name.lower() # experiments are forced into lowercase
             new_experiment = Experiment(experiment_name, scheduler,
                 IMAGEPATH, Camera, experiment_positions, interval)
