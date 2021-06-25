@@ -33,6 +33,7 @@ class Camera(BaseCamera):
     @staticmethod
     def frames(resolution = [640, 480]):
         print(f"camera_opencv resolution: {resolution}")
+        print(f"camera source: {Camera.video_source}")
         camera = cv2.VideoCapture(Camera.video_source)
 
         try:
