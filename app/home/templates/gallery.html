@@ -24,7 +24,7 @@
               <div class="card-body">
                 {% for name in images %}
                 {{name}}<br>
-                <img src="{{ url_for('static', filename='upload/' + image_foldername + name) }}" >
+                <img src="{{ url_for('static', filename='upload/' + image_foldername + name) }}" ><br>
                 {% endfor %}
               </div>
           </div>
