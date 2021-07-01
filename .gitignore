@@ -1,5 +1,8 @@
+.vscode/
+**/__pycache__/
+*.pyc
+experimental
 # byte-compiled / optimized / DLL files
-__pycache__/
 *.py[cod]
 
 # tests and coverage
