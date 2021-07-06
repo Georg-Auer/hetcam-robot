@@ -104,10 +104,10 @@ void loop()
   motor2.moveTo(testStruct.motor2_position);
   motor3.moveTo(testStruct.motor3_position);
 
-  motor0.setSpeed(20000);
-  motor1.setSpeed(20000);
-  motor2.setSpeed(20000);
-  motor3.setSpeed(20000);
+  motor0.setSpeed(700);
+  motor1.setSpeed(700);
+  motor2.setSpeed(700);
+  motor3.setSpeed(700);
 
   motor0.runSpeedToPosition();  
   motor1.runSpeedToPosition();
