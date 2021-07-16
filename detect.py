@@ -188,13 +188,10 @@ def detect(raw_image_foldername, exp_foldername, yolo_dir):
     # check_requirements(exclude=('torch', 'torchvision', 'tensorboard', 'pycocotools', 'thop'))
 
     detect2(opt=opt)
-    # with torch.no_grad():
-    #     if opt.update:  # update all models (to fix SourceChangeWarning)
-    #         for opt.weights in ['yolov5s.pt', 'yolov5m.pt', 'yolov5l.pt', 'yolov5x.pt']:
-    #             detect(opt=opt)
-    #             strip_optimizer(opt.weights)
-    #     else:
-    #         detect(opt=opt)
+
 
 if __name__ == '__main__':
-    detect()
+    exp_foldername = 'app/base/static/upload/default/'
+    raw_image_foldername = f'app/base/static/upload/default/het-cam-raw'
+    yolo_dir = 'het-cam-yolo'
+    detect(raw_image_foldername, exp_foldername, yolo_dir)
