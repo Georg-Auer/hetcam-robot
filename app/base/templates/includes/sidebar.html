@@ -18,9 +18,8 @@
     <div class="sidebar-wrapper" id="sidebar-wrapper">
       <ul class="nav">
       {% if current_user.is_authenticated %}
-        <li class="active">
-          <!-- / means: index.html -->
-          <a href="/">
+        <li class="active"> 
+          <a href="/"> {# / means: index.html #}
             <i class="now-ui-icons media-1_camera-compact"></i>
             <p>HET CAM²</p>
           </a>
@@ -55,6 +54,7 @@
             <p>Camera</p>
           </a>
         </li>
+        {#
         <!-- <li class="active">
           <a href="/dashboard.html">
             <i class="now-ui-icons education_atom"></i>
@@ -104,6 +104,7 @@
                 <p>Error 404</p>
             </a>
         </li>         -->
+        #}
         <li class="">
             <a href="{{ url_for('base_blueprint.logout') }}">
                 <i class="now-ui-icons media-1_button-power"></i>
