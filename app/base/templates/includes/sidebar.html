@@ -18,38 +18,38 @@
     <div class="sidebar-wrapper" id="sidebar-wrapper">
       <ul class="nav">
       {% if current_user.is_authenticated %}
-        <li class="{% if 'index' in segment %} active {% endif %}">
+        <li class="active">
           <!-- / means: index.html -->
           <a href="/">
             <i class="now-ui-icons media-1_camera-compact"></i>
             <p>HET CAM²</p>
           </a>
         </li>
-        <li class="{% if 'gallery' in segment %} active {% endif %}">
+        <li class="active">
           <a href="/gallery">
             <i class="now-ui-icons design_image"></i>
             <p>Recorded Images</p>
           </a>
         </li>
-        <li class="{% if 'skeleton' in segment %} active {% endif %}">
+        <li class="active">
           <a href="/gallery-skeleton">
             <i class="now-ui-icons design_image"></i>
             <p>Skeletonized Images</p>
           </a>
         </li>
-        <li class="{% if 'yolo' in segment %} active {% endif %}">
+        <li class="active">
           <a href="/gallery-yolo">
             <i class="now-ui-icons design_image"></i>
             <p>Yolov5 object detection</p>
           </a>
         </li>        
-        <li class="{% if 'experiments' in segment %} active {% endif %}">
+        <li class="active">
           <a href="/experiments">
             <i class="now-ui-icons education_atom"></i>
             <p>Experiments</p>
           </a>
         </li>
-        <li class="{% if 'camera-settings' in segment %} active {% endif %}">
+        <li class="active">
           <a href="/camera-settings">
             <i class="now-ui-icons ui-1_settings-gear-63"></i>
             <p>Camera</p>
