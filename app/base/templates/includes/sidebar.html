@@ -18,37 +18,37 @@
     <div class="sidebar-wrapper" id="sidebar-wrapper">
       <ul class="nav">
       {% if current_user.is_authenticated %}
-        <li class="active"> 
+        <li class=""> 
           <a href="/"> {# / means: index.html #}
             <i class="now-ui-icons media-1_camera-compact"></i>
             <p>HET CAM²</p>
           </a>
         </li>
-        <li class="active">
+        <li class="">
           <a href="/gallery">
             <i class="now-ui-icons design_image"></i>
             <p>Recorded Images</p>
           </a>
         </li>
-        <li class="active">
+        <li class="">
           <a href="/gallery-skeleton">
             <i class="now-ui-icons design_image"></i>
             <p>Skeletonized Images</p>
           </a>
         </li>
-        <li class="active">
+        <li class="">
           <a href="/gallery-yolo">
             <i class="now-ui-icons design_image"></i>
             <p>Yolov5 object detection</p>
           </a>
         </li>        
-        <li class="active">
+        <li class="">
           <a href="/experiments">
             <i class="now-ui-icons education_atom"></i>
             <p>Experiments</p>
           </a>
         </li>
-        <li class="active">
+        <li class="">
           <a href="/camera-settings">
             <i class="now-ui-icons ui-1_settings-gear-63"></i>
             <p>Camera</p>
@@ -111,7 +111,7 @@
                 <p>Logout</p>
             </a>
         </li>         
-        <li class="active">
+        <li class="">
           <a target="_blank"
              href="https://www.plus.ac.at/biowissenschaften/der-fachbereich/arbeitsgruppen/lepperdinger/spoc-labs/">
             <i class="now-ui-icons objects_spaceship"></i>
@@ -119,13 +119,13 @@
           </a>
         </li>
         {% else %}
-        <li class="active">
+        <li class="">
           <a href="/gallery">
             <i class="now-ui-icons design_image"></i>
             <p>Recorded Images</p>
           </a>
         </li>
-        <li class="active">
+        <li class="">
           <a target="_blank"
              href="https://www.plus.ac.at/biowissenschaften/der-fachbereich/arbeitsgruppen/lepperdinger/spoc-labs/">
             <i class="now-ui-icons objects_spaceship"></i>
