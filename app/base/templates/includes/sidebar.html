@@ -18,7 +18,7 @@
     <div class="sidebar-wrapper" id="sidebar-wrapper">
       <ul class="nav">
       {% if current_user.is_authenticated %}
-        <li class="{% if 'index' in segment %} active {% endif %}">
+        <li class="{% if 'index' in segment %} active {% else %} {% endif %}">
           <a href="/">
             <i class="now-ui-icons media-1_camera-compact"></i>
             <p>HET CAM²</p>
