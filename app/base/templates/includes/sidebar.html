@@ -35,25 +35,25 @@
               <p>Recorded Images</p>
             </a>
           </li>
-          <li class="{% if 'skeleton' in segment %} active {% endif %}">
+          <li class="{% if segment is defined %}{% if 'skeleton' in segment %} active {% endif %}{% endif %}">
             <a href="/gallery-skeleton">
               <i class="now-ui-icons design_image"></i>
               <p>Skeletonized Images</p>
             </a>
           </li>
-          <li class="{% if 'yolo' in segment %} active {% endif %}">
+          <li class="{% if segment is defined %}{% if 'yolo' in segment %} active {% endif %}{% endif %}">
             <a href="/gallery-yolo">
               <i class="now-ui-icons design_image"></i>
               <p>Yolov5 object detection</p>
             </a>
           </li>        
-          <li class="{% if 'experiments' in segment %} active {% endif %}">
+          <li class="{% if segment is defined %}{% if 'experiments' in segment %} active {% endif %}{% endif %}">
             <a href="/experiments">
               <i class="now-ui-icons education_atom"></i>
               <p>Experiments</p>
             </a>
           </li>
-          <li class="{% if 'camera-settings' in segment %} active {% endif %}">
+          <li class="{% if segment is defined %}{% if 'camera-settings' in segment %} active {% endif %}{% endif %}">
             <a href="/camera-settings">
               <i class="now-ui-icons ui-1_settings-gear-63"></i>
               <p>Camera</p>
