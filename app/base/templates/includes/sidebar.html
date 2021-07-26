@@ -28,7 +28,8 @@
               <p>HET CAM²</p>
             </a>
           </li>
-          <li class="{% if 'gallery' in segment %} active {% endif %}">
+          
+          <li class="{% if segment is defined %}{% if 'gallery' in segment %} active {% endif %}{% endif %}">
             <a href="/gallery">
               <i class="now-ui-icons design_image"></i>
               <p>Recorded Images</p>
