@@ -103,7 +103,7 @@ def index():
     print(current_experiment.name)
     """Video streaming home page."""
     # return render_template('index.html', images=images)
-    return render_template('index.html')
+    return render_template('index.html', segment="index")
 
 def gen(camera):
     current_experiment = select_flagged_experiment()
