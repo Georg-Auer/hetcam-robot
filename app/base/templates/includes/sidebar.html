@@ -119,13 +119,19 @@
           </a>
         </li>
         {% else %}
-        <li class="{% if 'gallery' in segment %} active {% endif %}">
+        <li class="">
+          <a href="/login">
+            <i class="now-ui-icons design_image"></i>
+            <p>Login</p>
+          </a>
+        </li>
+        <li class="active">
           <a href="/gallery">
             <i class="now-ui-icons design_image"></i>
             <p>Recorded Images</p>
           </a>
         </li>
-        <li class="active">
+        <li class="">
           <a target="_blank"
              href="https://www.plus.ac.at/biowissenschaften/der-fachbereich/arbeitsgruppen/lepperdinger/spoc-labs/">
             <i class="now-ui-icons objects_spaceship"></i>
