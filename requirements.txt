@@ -1,6 +1,11 @@
 numpy
+pandas
 flask_apscheduler
 flask_bootstrap
+tqdm
+matplotlib
+seaborn
+PyYaml
 pySerial
 pySerialTransfer
 flask==1.1.2
@@ -14,5 +19,3 @@ python-decouple==3.4
 gunicorn==20.0.4
 jinja2==2.11.3
 imutils
-torch -f https://torch.kmtea.eu/whl/stable.html
-torchvision -f https://torch.kmtea.eu/whl/stable.html
