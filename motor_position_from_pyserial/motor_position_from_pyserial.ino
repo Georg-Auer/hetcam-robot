@@ -115,6 +115,7 @@ void loop()
   motor3.runSpeedToPosition();
 
   if (motor0.distanceToGo()== 0){
+    // since momentum might exist, wait a bit before switching off the motor
     delay(500);
     digitalWrite (motor0_en, HIGH); //motor0
     //delay(500);
