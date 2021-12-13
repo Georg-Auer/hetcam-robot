@@ -142,9 +142,9 @@ class Experiment(object):
 
         try:
             from picamera import PiCamera
-            from picamera.array import PiRGBArray
             import time
             camera = PiCamera()
+            # from picamera.array import PiRGBArray
         except:
             print("camera was not closed last time or is still in use")
             #camera.close()
