@@ -1,4 +1,3 @@
-fingerprint_feature_extractor
 numpy
 flask_apscheduler
 flask_bootstrap
